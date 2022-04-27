@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <form action="{% url 'feeds:create' %}" method='POST'>
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button>작성 완료</button>
+  </form>
+
+{% endblock  %}

@@ -1,5 +1,10 @@
 {% extends 'base.html' %}
 
 {% block content %}
-
+{% for feed in feeds %}
+  <h1>IMAGE 자리</h1>
+  <p>Feed 내용 자리 {{ feed.content }}</p>
+  <a href="{% url 'feeds:detail' feed.pk %}">상세 보기</a>
+  <hr>
+{% endfor %}
 {% endblock content %}

@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <form action="{% url 'feeds:comment_update' feed.pk comment.pk %}" method='POST'>
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button>수정 완료</button>
+  </form>
+
+{% endblock content %}
