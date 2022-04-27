@@ -2,7 +2,7 @@ from django import forms
 from .models import Feed, Comment
 
 class FeedForm(forms.ModelForm):
-
+    
     class Meta:
         model = Feed
         fields = ('content','image_url')

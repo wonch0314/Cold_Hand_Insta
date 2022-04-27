@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<p>이미지 자리{{ feed.image_url }}</p>
+<p>내용 자리{{ feed.content }}</p>
+<p>작성 시간: {{ feed.created_at }}</p>
+<p>수정 시간: {{ feed.updated_at }}</p>
+{% if feed.create_at == feed.updated_at %}
+  <small>(수정됨)</small>
+{% endif %}
+
+{% if request.user == feed.user %}
+  <form action="{% url 'feeds:update' feed.pk %}">
+    <button>Feed 수정</button>
+  </form>
+  <form action="{% url 'feeds:delete' feed.pk %}" method='POST'>
+    {% csrf_token %}
+    <button>Feed 삭제</button>
+  </form>
+{% endif %}
+<hr>
+<form action="{% url 'feeds:comment_create' feed.pk %}" method='POST'>
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button>댓글 작성</button>
+</form>
+{% for comment in comments %}
+  <p>{{ comment.content }}</p>
+  <form action="{% url 'feeds:comment_update' feed.pk comment.pk %}">
+    <button>수정</button>
+  </form>
+  <form action="{% url 'feeds:comment_delete' feed.pk comment.pk %}" method='POST'>
+    {% csrf_token %}
+    <button>삭제</button>
+  </form>
+{% endfor %}
+
+{% endblock content %}
