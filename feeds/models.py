@@ -6,12 +6,18 @@ class Feed(models.Model):
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    image_url = models.TextField()
+    image_url = models.ImageField(null=True, blank=True)
 
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name='feed_users'
+    )
+
+    like_users = models.ManyToManyField(
+        settings.AUTH_USER_MODEL,
+        blank=True,
+        related_name='like_feeds'
     )
 
 class Comment(models.Model):

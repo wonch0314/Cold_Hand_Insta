@@ -1,11 +1,25 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<p>이미지 자리{{ feed.image_url }}</p>
-<p>내용 자리{{ feed.content }}</p>
+{% if feed.image_url %}
+  <img width=200 src="{{feed.image_url.url}}" alt="">
+{% endif %}
+<p>
+  <a href="{% url 'accounts:profile' user.username %}">프로필</a>
+  <form action="{% url 'feeds:like' feed.pk %}" method='POST'>
+    {% csrf_token %}
+    {% if request.user in feed.like_users.all %}
+      <button>언좋아요</button>
+    {% else %}
+      <button>좋아요</button>
+    {% endif %}
+  </form>
+<p>{{feed.like_users.all|length}}명이 좋아합니다.</p>
+</p>
+<p>내용 : {{ feed.content }} </p>
 <p>작성 시간: {{ feed.created_at }}</p>
 <p>수정 시간: {{ feed.updated_at }}</p>
-{% if feed.create_at == feed.updated_at %}
+{% if feed.create_at != feed.updated_at %}
   <small>(수정됨)</small>
 {% endif %}
 

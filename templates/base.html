@@ -15,10 +15,9 @@
         {% csrf_token %}
         <button>로그아웃</button>
       </form>
-      <form action="" method='GET'>
-        {% csrf_token %}
-        <a href="{% url 'feeds:create' %}">피드 작성</a>
-      </form>
+      <a href="{% url 'feeds:index' %}">메인</a>
+      <a href="{% url 'feeds:create' %}">피드 작성</a>
+      <a href="{% url 'feeds:userfeed' request.user.pk %}">내 피드</a>
     {% else %}
       <a href="{% url 'accounts:signup' %}">회원가입</a>
       <a href="{% url 'accounts:login' %}">로그인</a>

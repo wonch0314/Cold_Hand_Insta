@@ -1,7 +1,47 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>프로필</h1>
-  {{user.username}}
+<h1>{{user.username}} 프로필</h1>
+<a href="{% url 'feeds:userfeed' user.pk %}">피드</a>
+<hr>
+  
+  {% if request.user.username != user.username %}
+  <form action="{% url 'accounts:follows' user.username %}" method='POST'>
+    {% csrf_token %}
+    
+    {% if request.user in user.followers.all %}
+    <button>UnFollow</button>
+    {% else %}
+    <button>Follow</button>
+    {% endif %}
+</form>
+{% endif %}
 
+<h2>좋아요 누른 피드 목록</h2>
+{% for feed in user.like_feeds.all %}
+  <p>
+    <a href="{% url 'feeds:detail' feed.pk %}">{{feed.pk}}</a>
+  </p>
+{% endfor %}
+<hr>
+
+<h2>Followers</h2>
+<p>{{user.followers.all|length}}</p>
+{% for follower in user.followers.all %}
+  <p>
+    <a href="{% url 'accounts:profile' follower.username %}" >
+      {{follower.username}}
+    </a>
+  </p>
+{% endfor %}
+<hr>
+<h2>Followings</h2>
+<p>{{user.followees.all|length}}</p>
+{% for followee in user.followees.all %}
+  <p>
+    <a href="{% url 'accounts:profile' followee.username %}" >
+      {{followee.username}}
+    </a>
+  </p>
+{% endfor %}
 {% endblock content %}

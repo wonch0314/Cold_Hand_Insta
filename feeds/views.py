@@ -2,11 +2,12 @@ from django.shortcuts import get_object_or_404, render, redirect
 
 from insta.settings import AUTH_USER_MODEL
 from .models import Feed, Comment
+from accounts.models import User
 from .forms import FeedForm, CommentForm
 
 # Create your views here.
 def index(request):
-    feeds = Feed.objects.all()
+    feeds = Feed.objects.all().order_by('-pk')
     context = {
         'feeds': feeds,
     }
@@ -15,7 +16,7 @@ def index(request):
 def create(request):
     if request.user.is_authenticated:
         if request.method == 'POST':
-            form = FeedForm(data=request.POST)
+            form = FeedForm(request.POST, request.FILES)
             if form.is_valid():
                 new_feed = form.save(commit = False)
                 new_feed.user = request.user
@@ -28,15 +29,27 @@ def create(request):
             }
             return render(request, 'feeds/new.html', context)
 
+def userfeed(request,pk):
+    if request.user.is_authenticated:
+        feeds = Feed.objects.filter(user_id=pk).order_by('-pk')
+        user = User.objects.get(pk=pk)
+        context = {
+            'feeds':feeds,
+            'user':user,
+        }
+        return render(request,'feeds/userfeed.html',context)
+
 def detail(request, feed_pk):
     if request.method == 'GET':
         feed = get_object_or_404(Feed, pk=feed_pk)
         comments = Comment.objects.filter(user=request.user)
         form = CommentForm()
+        user = get_object_or_404(User,pk=feed.user_id)
         context = {
             'feed': feed,
             'comments': comments,
             'form': form,
+            'user':user,
         }
         return render(request, 'feeds/detail.html', context)
 
@@ -46,7 +59,7 @@ def update(request, feed_pk):
     
     if request.user.is_authenticated:
         if request.method == 'POST':
-            form = FeedForm(instance = feed, data = request.POST)
+            form = FeedForm(request.POST, request.FILES, instance=feed)
             if form.is_valid():
                 form.save()
                 return redirect('feeds:detail', feed.pk)
@@ -67,6 +80,19 @@ def delete(request, feed_pk):
             feed.delete()
             return redirect('feeds:index')
 
+def like(request, feed_pk):
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            feed = get_object_or_404(Feed,pk=feed_pk)
+            user = request.user
+
+            if feed.like_users.filter(pk=user.pk).exists():
+                feed.like_users.remove(user)
+            
+            else:
+                feed.like_users.add(user)
+            
+            return redirect('feeds:detail', feed_pk)
 
 def comment_create(request, feed_pk):
     if request.user.is_authenticated:

@@ -1,5 +1,5 @@
 from multiprocessing import AuthenticationError
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
 from .forms import UserForm
 from django.contrib.auth.forms import (
     AuthenticationForm,
@@ -8,6 +8,7 @@ from django.contrib.auth import (
     login as auth_login,
     logout as auth_logout,
     update_session_auth_hash,
+    get_user_model,
 )
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
@@ -54,9 +55,21 @@ def logout(request):
     auth_logout(request)
     return redirect('feeds:index')
 
-def profile(request,pk):
-    user = User.objects.get(pk=pk)
+def profile(request,username):
+    user = User.objects.get(username=username)
     context = {
         'user':user,
     }
     return render(request,'accounts/profile.html',context)
+
+def follows(request,username):
+    you  = get_object_or_404(get_user_model(),username=username)
+    me = request.user
+
+    if you.username != me.username:
+        if you.followers.filter(username=me.username).exists():
+            you.followers.remove(me)
+        else:
+            you.followers.add(me)
+    
+    return redirect('accounts:profile',you.username)

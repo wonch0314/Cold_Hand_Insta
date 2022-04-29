@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <form action="{% url 'feeds:update' feed.pk %}" method='POST'>
+  <form action="{% url 'feeds:update' feed.pk %}" method='POST' enctype='multipart/form-data'>
     {% csrf_token %}
     {{ form.as_p }}
     <button>수정 완료</button>
