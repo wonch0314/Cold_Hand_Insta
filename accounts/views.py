@@ -13,6 +13,7 @@ from django.contrib.auth import (
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 from .models import User
+from feeds.models import Feed, Comment
 
 # Create your views here.
 def signup(request):
@@ -57,8 +58,12 @@ def logout(request):
 
 def profile(request,username):
     user = User.objects.get(username=username)
+    feeds = Feed.objects.filter(user_id=user.pk)
+    comments = Comment.objects.filter(user_id=user.pk)
     context = {
         'user':user,
+        'feeds': feeds,
+        'comment': comments,
     }
     return render(request,'accounts/profile.html',context)
 

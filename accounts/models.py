@@ -8,3 +8,5 @@ class User(AbstractUser):
         settings.AUTH_USER_MODEL,
         related_name='followees'
     )
+    # image_url = models.ImageField(null=True, blank=True)
+    

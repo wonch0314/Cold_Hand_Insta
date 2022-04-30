@@ -17,6 +17,29 @@
 </form>
 {% endif %}
 
+<h2>내가 작성한 피드</h2>
+{% for feed in feeds %}
+<div style='border: solid 3px black; margin: 10px 0 10px 0'>
+  {% if feed.image_url %}
+  <div>
+    <img width=200 src="{{feed.image_url.url}}" alt="">
+  </div>
+  {% endif %}
+  <br>
+  <span>{{ feed.content }}</span>
+  <a href="{% url 'feeds:detail' feed.pk %}">상세 보기</a>
+</div>
+  {% endfor %}
+<hr>
+
+<h2>내가 작성한 댓글</h2>
+{% for comment in comments %}
+  <h1>IMAGE 자리</h1>
+  <p>Feed 내용 자리 {{ comment.content }}</p>
+  <hr>
+{% endfor %}
+<hr>
+
 <h2>좋아요 누른 피드 목록</h2>
 {% for feed in user.like_feeds.all %}
   <p>

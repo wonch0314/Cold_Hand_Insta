@@ -1,11 +1,16 @@
 {% extends 'base.html' %}
 
+{% block navbar %}
+  <a href="{% url 'feeds:index' %}">Main 페이지로 → </a>
+{% endblock navbar %}
+
+
 {% block content %}
 {% if feed.image_url %}
   <img width=200 src="{{feed.image_url.url}}" alt="">
 {% endif %}
 <p>
-  <a href="{% url 'accounts:profile' user.username %}">프로필</a>
+  <a href="{% url 'accounts:profile' user.username %}">{{ user.username }}의 프로필</a>
   <form action="{% url 'feeds:like' feed.pk %}" method='POST'>
     {% csrf_token %}
     {% if request.user in feed.like_users.all %}
@@ -19,7 +24,7 @@
 <p>내용 : {{ feed.content }} </p>
 <p>작성 시간: {{ feed.created_at }}</p>
 <p>수정 시간: {{ feed.updated_at }}</p>
-{% if feed.create_at != feed.updated_at %}
+{% if feed.created_at != feed.updated_at %}
   <small>(수정됨)</small>
 {% endif %}
 

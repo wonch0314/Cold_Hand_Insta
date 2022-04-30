@@ -8,3 +8,4 @@ class UserForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
         model = User
         fields = ('username',)
+
