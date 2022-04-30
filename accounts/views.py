@@ -1,6 +1,6 @@
 from multiprocessing import AuthenticationError
 from django.shortcuts import get_object_or_404, redirect, render
-from .forms import UserForm
+from .forms import UserForm, CustomUserChangeForm
 from django.contrib.auth.forms import (
     AuthenticationForm,
 )
@@ -78,3 +78,25 @@ def follows(request,username):
             you.followers.add(me)
     
     return redirect('accounts:profile',you.username)
+
+def update(request, username):
+    you  = get_object_or_404(get_user_model(),username=username)
+    me = request.user
+    if you.username == me.username:
+        if request.method == 'GET':
+            form = CustomUserChangeForm(instance = you)
+            context = {
+                'form': form
+            }
+            return render(request, 'accounts/update.html', context)
+        elif request.method == 'POST':
+            form = CustomUserChangeForm(request.POST, request.FILES, instance=you)
+            if form.is_valid():
+                form.save()
+                return redirect('accounts:profile', you.username)
+            context = {
+                'form': form
+            }
+            return render(request, 'accounts/update.html', context)
+    return redirect('accounts:profile', username)
+    

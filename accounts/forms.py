@@ -7,5 +7,12 @@ class UserForm(UserCreationForm):
 
     class Meta(UserCreationForm.Meta):
         model = User
-        fields = ('username',)
+        fields = ('username', 'image_url')
 
+
+class CustomUserChangeForm(UserChangeForm):
+    
+    class Meta(UserChangeForm.Meta):
+        model = User
+        fields = ('username', 'image_url',)
+        

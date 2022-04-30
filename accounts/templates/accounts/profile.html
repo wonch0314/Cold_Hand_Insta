@@ -2,6 +2,12 @@
 
 {% block content %}
 <h1>{{user.username}} 프로필</h1>
+<a href="{% url 'accounts:update' user.username %}">Profile 수정</a>
+{% if user.image_url %}
+  <div>
+    <img width=200 src="{{ user.image_url.url }}" alt="">
+  </div>
+  {% endif %}
 <a href="{% url 'feeds:userfeed' user.pk %}">피드</a>
 <hr>
   
