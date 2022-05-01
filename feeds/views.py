@@ -28,6 +28,7 @@ def create(request):
                 'form': form,
             }
             return render(request, 'feeds/new.html', context)
+    return redirect('accounts:login')
 
 def userfeed(request,pk):
     if request.user.is_authenticated:
@@ -42,9 +43,9 @@ def userfeed(request,pk):
 def detail(request, feed_pk):
     if request.method == 'GET':
         feed = get_object_or_404(Feed, pk=feed_pk)
-        comments = Comment.objects.filter(user=request.user)
-        form = CommentForm()
         user = get_object_or_404(User,pk=feed.user_id)
+        comments = feed.feeds.all()
+        form = CommentForm()
         context = {
             'feed': feed,
             'comments': comments,
@@ -71,6 +72,7 @@ def update(request, feed_pk):
             'feed': feed,
         }
         return render(request, 'feeds/update.html', context)
+    return redirect('accounts:login')
 
 
 def delete(request, feed_pk):
@@ -79,6 +81,7 @@ def delete(request, feed_pk):
             feed = get_object_or_404(Feed, pk=feed_pk)
             feed.delete()
             return redirect('feeds:index')
+    return redirect('accounts:login')
 
 def like(request, feed_pk):
     if request.user.is_authenticated:
@@ -93,6 +96,7 @@ def like(request, feed_pk):
                 feed.like_users.add(user)
             
             return redirect('feeds:detail', feed_pk)
+    return redirect('accounts:login')
 
 def comment_create(request, feed_pk):
     if request.user.is_authenticated:
@@ -112,7 +116,7 @@ def comment_create(request, feed_pk):
                 'form': form,
             }
             return render(request, 'feeds/detail.html', context)
-
+    return redirect('accounts:login')
 
 def comment_update(request, feed_pk, comment_pk):
     if request.user.is_authenticated:
@@ -138,7 +142,7 @@ def comment_update(request, feed_pk, comment_pk):
                 'form': form,
             }
             return render(request, 'feeds/update_comment.html', context)
-
+    return redirect('accounts:login')
 
 def comment_delete(request, feed_pk, comment_pk):
     if request.user.is_authenticated:
@@ -146,3 +150,4 @@ def comment_delete(request, feed_pk, comment_pk):
             comment = get_object_or_404(Comment, pk = comment_pk)
             comment.delete()
             return redirect('feeds:detail', feed_pk)
+    return redirect('accounts:login')

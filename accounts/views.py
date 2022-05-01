@@ -1,6 +1,6 @@
 from multiprocessing import AuthenticationError
 from django.shortcuts import get_object_or_404, redirect, render
-from .forms import UserForm
+from .forms import UserForm, CustomUserChangeForm
 from django.contrib.auth.forms import (
     AuthenticationForm,
 )
@@ -13,6 +13,7 @@ from django.contrib.auth import (
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 from .models import User
+from feeds.models import Feed, Comment
 
 # Create your views here.
 def signup(request):
@@ -57,8 +58,12 @@ def logout(request):
 
 def profile(request,username):
     user = User.objects.get(username=username)
+    feeds = Feed.objects.filter(user_id=user.pk)
+    comments = Comment.objects.filter(user_id=user.pk)
     context = {
         'user':user,
+        'feeds': feeds,
+        'comment': comments,
     }
     return render(request,'accounts/profile.html',context)
 
@@ -73,3 +78,25 @@ def follows(request,username):
             you.followers.add(me)
     
     return redirect('accounts:profile',you.username)
+
+def update(request, username):
+    you  = get_object_or_404(get_user_model(),username=username)
+    me = request.user
+    if you.username == me.username:
+        if request.method == 'GET':
+            form = CustomUserChangeForm(instance = you)
+            context = {
+                'form': form
+            }
+            return render(request, 'accounts/update.html', context)
+        elif request.method == 'POST':
+            form = CustomUserChangeForm(request.POST, request.FILES, instance=you)
+            if form.is_valid():
+                form.save()
+                return redirect('accounts:profile', you.username)
+            context = {
+                'form': form
+            }
+            return render(request, 'accounts/update.html', context)
+    return redirect('accounts:profile', username)
+    

@@ -17,11 +17,15 @@
       </form>
       <a href="{% url 'feeds:index' %}">메인</a>
       <a href="{% url 'feeds:create' %}">피드 작성</a>
+      <a href="{% url 'accounts:profile' request.user.username %}">내 프로필</a>
       <a href="{% url 'feeds:userfeed' request.user.pk %}">내 피드</a>
     {% else %}
       <a href="{% url 'accounts:signup' %}">회원가입</a>
       <a href="{% url 'accounts:login' %}">로그인</a>
     {% endif %}
+    {% block navbar %}
+    {% endblock navbar %}
+
     <hr>
     {% block content %}
     
