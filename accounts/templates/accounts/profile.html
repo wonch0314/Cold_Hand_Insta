@@ -8,7 +8,6 @@
     <img width=200 src="{{ user.image_url.url }}" alt="">
   </div>
   {% endif %}
-<a href="{% url 'feeds:userfeed' user.pk %}">피드</a>
 <hr>
   
   {% if request.user.username != user.username %}
@@ -40,8 +39,7 @@
 
 <h2>내가 작성한 댓글</h2>
 {% for comment in comments %}
-  <h1>IMAGE 자리</h1>
-  <p>Feed 내용 자리 {{ comment.content }}</p>
+  <p>{{ comment.content }}</p>
   <hr>
 {% endfor %}
 <hr>
@@ -54,8 +52,7 @@
 {% endfor %}
 <hr>
 
-<h2>Followers</h2>
-<p>{{user.followers.all|length}}</p>
+<h2>팔로워 - {{user.followers.all|length}}</h2>
 {% for follower in user.followers.all %}
   <p>
     <a href="{% url 'accounts:profile' follower.username %}" >
@@ -64,8 +61,7 @@
   </p>
 {% endfor %}
 <hr>
-<h2>Followings</h2>
-<p>{{user.followees.all|length}}</p>
+<h2>팔로우 - {{user.followees.all|length}}</h2>
 {% for followee in user.followees.all %}
   <p>
     <a href="{% url 'accounts:profile' followee.username %}" >

@@ -58,12 +58,12 @@ def logout(request):
 
 def profile(request,username):
     user = User.objects.get(username=username)
-    feeds = Feed.objects.filter(user_id=user.pk)
-    comments = Comment.objects.filter(user_id=user.pk)
+    feeds = user.user_feeds.all()
+    comments = user.user_comments.all()
     context = {
         'user':user,
         'feeds': feeds,
-        'comment': comments,
+        'comments': comments,
     }
     return render(request,'accounts/profile.html',context)
 

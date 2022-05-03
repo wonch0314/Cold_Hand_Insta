@@ -1,7 +1,7 @@
 from django.shortcuts import get_object_or_404, render, redirect
 
 from insta.settings import AUTH_USER_MODEL
-from .models import Feed, Comment
+from .models import Feed, Comment, Hashtag
 from accounts.models import User
 from .forms import FeedForm, CommentForm
 
@@ -20,7 +20,23 @@ def create(request):
             if form.is_valid():
                 new_feed = form.save(commit = False)
                 new_feed.user = request.user
+                words = new_feed.content.split()
                 new_feed.save()
+                # 해시태그 구현
+                hashtag = [word[1:] for word in words if word[0] == '#']
+                for hash in hashtag:
+                    if Hashtag.objects.filter(content=hash).exists():
+                        new_hash = Hashtag.objects.get(content=hash)
+                        new_feed.hashtag.add(new_hash)
+                    else:
+                        new_hash = Hashtag(content=hash)
+                        new_hash.save()
+                        new_feed.hashtag.add(new_hash)
+                # 인물태그 구현
+                usertag = [word[1:] for word in words if word[0] == '@']
+                for tag in usertag:
+                    user = User.objects.get(username=tag)
+                    new_feed.tag_users.add(user)
                 return redirect('feeds:index')
         elif request.method == 'GET':
             form = FeedForm()
@@ -30,21 +46,11 @@ def create(request):
             return render(request, 'feeds/new.html', context)
     return redirect('accounts:login')
 
-def userfeed(request,pk):
-    if request.user.is_authenticated:
-        feeds = Feed.objects.filter(user_id=pk).order_by('-pk')
-        user = User.objects.get(pk=pk)
-        context = {
-            'feeds':feeds,
-            'user':user,
-        }
-        return render(request,'feeds/userfeed.html',context)
-
 def detail(request, feed_pk):
     if request.method == 'GET':
         feed = get_object_or_404(Feed, pk=feed_pk)
         user = get_object_or_404(User,pk=feed.user_id)
-        comments = feed.feeds.all()
+        comments = feed.feed_comments.all()
         form = CommentForm()
         context = {
             'feed': feed,

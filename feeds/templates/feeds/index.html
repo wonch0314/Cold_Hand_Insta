@@ -2,8 +2,13 @@
 
 {% block content %}
 {% for feed in feeds %}
-  <h1>IMAGE 자리</h1>
-  <p>Feed 내용 자리 {{ feed.content }}</p>
+  {% if feed.image_url %}
+  <div>
+    <img width=200 src="{{feed.image_url.url}}" alt="">
+  </div>
+  {% endif %}
+  <p>작성자: {{feed.user.username}}</p>
+  <p>{{ feed.content }}</p>
   <a href="{% url 'feeds:detail' feed.pk %}">상세 보기</a>
   <hr>
 {% endfor %}

@@ -7,7 +7,6 @@ urlpatterns = [
     path('', views.index, name='index'),
     ## Feed - Create Read(detail) Update Delete
     path('create/', views.create, name='create'),
-    path('userfeed/<int:pk>', views.userfeed, name='userfeed'),
     path('<int:feed_pk>/detail/', views.detail, name='detail'),
     path('<int:feed_pk>/update/', views.update, name='update'),
     path('<int:feed_pk>/delete/', views.delete, name='delete'),
