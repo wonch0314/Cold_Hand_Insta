@@ -1,3 +1,4 @@
+from tkinter import CASCADE
 from django.db import models
 from insta import settings
 
@@ -18,6 +19,12 @@ class Feed(models.Model):
         settings.AUTH_USER_MODEL,
         blank=True,
         related_name='like_feeds'
+    )
+    
+    bookmark_user = models.ManyToManyField(
+        settings.AUTH_USER_MODEL,
+        blank=True,
+        related_name='bk_feed'
     )
 
 class Comment(models.Model):

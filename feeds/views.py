@@ -150,4 +150,17 @@ def comment_delete(request, feed_pk, comment_pk):
             comment = get_object_or_404(Comment, pk = comment_pk)
             comment.delete()
             return redirect('feeds:detail', feed_pk)
+    return redirect('accounts:login') 
+
+def bookmark(request, feed_pk):
+    if request.user.is_authenticated:
+        if request.method=='POST':
+            feed = get_object_or_404(Feed, pk=feed_pk)
+            user = request.user
+            if feed.bookmark_user.filter(pk=user.pk).exists():
+                feed.bookmark_user.remove(user)
+            else:
+                feed.bookmark_user.add(user)
+
+            return redirect('feeds:index')
     return redirect('accounts:login')

@@ -12,6 +12,7 @@ urlpatterns = [
     path('<int:feed_pk>/update/', views.update, name='update'),
     path('<int:feed_pk>/delete/', views.delete, name='delete'),
     path('<int:feed_pk>/like/', views.like, name='like'),
+    path('<int:feed_pk>/bookmark/', views.bookmark, name='bookmark'),
     
     ## Comment - Create Read(detail 불필요) Update Delete
     path('<int:feed_pk>/comment/create/', views.comment_create, name='comment_create'),
