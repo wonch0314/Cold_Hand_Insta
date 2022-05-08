@@ -10,6 +10,14 @@
   <p>작성자: {{feed.user.username}}</p>
   <p>{{ feed.content }}</p>
   <a href="{% url 'feeds:detail' feed.pk %}">상세 보기</a>
+  <form action="{% url 'feeds:bookmark' feed.pk %}" method='POST'>
+    {% csrf_token %}
+    {% if request.user in feed.bookmark_user.all %}
+      <button>북마크 해제</button>
+    {% else %}
+      <button>북마크 등록</button>
+    {% endif %}
+  </form>
   <hr>
 {% endfor %}
 {% endblock content %}
