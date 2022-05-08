@@ -24,6 +24,7 @@ class Feed(models.Model):
     bookmark_user = models.ManyToManyField(
         settings.AUTH_USER_MODEL,
         blank=True,
+        null=True,
         related_name='bk_feed'
     )
 
