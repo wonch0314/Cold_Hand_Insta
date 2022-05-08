@@ -23,6 +23,12 @@ class Feed(models.Model):
         related_name='like_feeds'
     )
 
+    bookmark_user = models.ManyToManyField(
+        settings.AUTH_USER_MODEL,
+        blank=True,
+        related_name='bk_feed'
+    )
+    
     hashtag = models.ManyToManyField(
         Hashtag,
         blank=True,
