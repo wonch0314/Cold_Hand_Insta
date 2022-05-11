@@ -1,72 +1,81 @@
 {% extends 'base.html' %}
 
+{% block style %}
+  .rectangle {
+    width: 160px;
+    height: 160px;
+    padding: 0px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .profile-image {
+    width: 240px;
+    height: 160px;
+    padding: 0px;
+    margin: 0px;
+  }
+
+  .feed-image {
+    width: 100%;
+  }
+{% endblock style %}
+
+
 {% block content %}
-<h1>{{user.username}} 프로필</h1>
-<a href="{% url 'accounts:update' user.username %}">Profile 수정</a>
-{% if user.image_url %}
-  <div>
-    <img width=200 src="{{ user.image_url.url }}" alt="">
-  </div>
-  {% endif %}
-<hr>
-  
-  {% if request.user.username != user.username %}
-  <form action="{% url 'accounts:follows' user.username %}" method='POST'>
-    {% csrf_token %}
-    
-    {% if request.user in user.followers.all %}
-    <button>UnFollow</button>
-    {% else %}
-    <button>Follow</button>
-    {% endif %}
-</form>
-{% endif %}
 
-<h2>내가 작성한 피드</h2>
-{% for feed in feeds %}
-<div style='border: solid 3px black; margin: 10px 0 10px 0'>
-  {% if feed.image_url %}
-  <div>
-    <img width=200 src="{{feed.image_url.url}}" alt="">
+<div class='row my-5'>
+  <div class='profile-image col-4 flex justify-content-center'>
+    <div class='rectangle mx-auto rounded-circle d-flex justify-content-center'>
+      {% if user.image_url %}
+        <img class='get-center' src="{{ user.image_url.url }}" alt="">
+      {% else %}
+        <img class='get-center' src="https://profileimg.plaync.com/account_profile_images/8A3BFAF2-D15F-E011-9A06-E61F135E992F?imageSize=large">
+      {% endif %}
+    </div>
   </div>
-  {% endif %}
-  <br>
-  <span>{{ feed.content }}</span>
-  <a href="{% url 'feeds:detail' feed.pk %}">상세 보기</a>
+
+  <div class='my-info col-8'>
+    <div class='d-flex align-content-center'>
+      <p class='fs-2 m-0'>{{ user.username }}</p>
+      <div class='d-flex align-content-center'>
+        {% if user == request.user %}
+          <form action="{% url 'accounts:update' user.username %}" class='my-auto'>
+            <button class='fs-5 mx-4'>Profile 수정</button>
+          </form>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class='d-flex my-3'>
+      <p>게시물 </p>
+      <p class='mx-4'>팔로워 {{user.followees.all|length}}</p>
+      <p>팔로우 {{user.followers.all|length}}</p>
+    </div>
+  </div>
 </div>
-  {% endfor %}
-<hr>
 
-<h2>내가 작성한 댓글</h2>
-{% for comment in comments %}
-  <p>{{ comment.content }}</p>
-  <hr>
-{% endfor %}
+<div class='row my-4'>
 <hr>
-
-<h2>좋아요 누른 피드 목록</h2>
-{% for feed in user.like_feeds.all %}
-  <p>
-    <a href="{% url 'feeds:detail' feed.pk %}">{{feed.pk}}</a>
-  </p>
-{% endfor %}
-<hr>
-
-<h2>팔로워 - {{user.followers.all|length}}</h2>
-{% for follower in user.followers.all %}
-  <p>
-    <a href="{% url 'accounts:profile' follower.username %}" >
-      {{follower.username}}
+{% for feed in feeds %}
+  <div class='col-4 p-3'>
+    <a href="#" class=''>
+      <div style='position:relative; overflow: hidden; padding-bottom: 100%;'>
+        <img class='img img-responsive img-fluid' src="{{feed.image_url.url}}" style='position:absolute'>
+      </div>
     </a>
-  </p>
+  </div>
 {% endfor %}
+
+<div class='row my-4'>
 <hr>
-<h2>팔로우 - {{user.followees.all|length}}</h2>
-{% for followee in user.followees.all %}
-  <p>
-    <a href="{% url 'accounts:profile' followee.username %}" >
-      {{followee.username}}
+{% for feed in feeds %}
+  <div class='col-4 p-3 border'>
+    <a href="#" class=''>
+      <div>
+        <img class='feed-image' src="{{feed.image_url.url}}">
+      </div>
     </a>
-  </p>
+  </div>
 {% endfor %}
 {% endblock content %}
