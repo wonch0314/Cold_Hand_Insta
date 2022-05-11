@@ -59,11 +59,16 @@
     .show {
       left: -100px !important;
     }
+    .navmenu {
+      max-width: 975px;
+    }
+    {% block style %}
+    {% endblock style %}
   </style>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-white fixed-top border-bottom ">
-      <div class="container-fluid d-flex justify-content-between">
+      <div class="container-fluid d-flex justify-content-between navmenu">
         <a class="navbar-brand logo" href="{% url 'feeds:index' %}">Saffstagram</a>
   
         <div class="d-flex align-items-center row justify-content-between">
@@ -127,11 +132,8 @@
       </div>
     </nav>
 
-  <div class="container mt-5">
-    {% block navbar %}
-    {% endblock navbar %}
-
-    <hr>
+  <div class="container mt-5 ">
+    <div class='mb-4'><hr></div>
     {% block content %}
     
     {% endblock content %}
