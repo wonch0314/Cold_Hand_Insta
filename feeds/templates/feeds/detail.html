@@ -1,9 +1,5 @@
 {% extends 'base.html' %}
 
-{% block navbar %}
-  <a href="{% url 'feeds:index' %}">Main 페이지로 → </a>
-{% endblock navbar %}
-
 
 {% block content %}
 {% if feed.image_url %}
