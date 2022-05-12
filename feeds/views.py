@@ -101,7 +101,7 @@ def like(request, feed_pk):
             else:
                 feed.like_users.add(user)
             
-            return redirect('feeds:detail', feed_pk)
+            return redirect('feeds:index')
     return redirect('accounts:login')
 
 def comment_create(request, feed_pk):

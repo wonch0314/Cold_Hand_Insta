@@ -1,3 +1,5 @@
+
+
 {% extends 'base.html' %}
 
 {% block style %}
@@ -15,6 +17,16 @@
 .card {
   width: 100
 }
+.feed-modal {
+  padding: 24px 64px;
+}
+.modal-dialog {
+  margin:0;
+  max-width:none;
+}
+textarea:focus {
+  outline:none;
+}
 {% endblock  %}
 
 
@@ -25,17 +37,21 @@
   <div class="card" style="width: 600px; margin-bottom: 24px;">
     <div class='namebar'>
       
-      <p class='m-0'> 
-        {% if feed.user.image_url %}
+      <div class='m-0 d-flex align-items-center'> 
+        <div>
+          {% if feed.user.image_url %}
           <img src="{{feed.user.image_url.url}}" alt="" width='32' height='32' style='border-radius:50%;'>
-        {% else %}
-        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
-          <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
-          <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"/>
-        </svg> 
-        {% endif %}
-        <a class='name fw-bold' href="{% url 'accounts:profile' feed.user.username %}">{{feed.user.username}}</a>
-      </p>
+          {% else %}
+          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
+            <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
+            <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"/>
+          </svg> 
+          {% endif %}
+        </div>
+        <div>
+          <a class='name fw-bold' href="{% url 'accounts:profile' feed.user.username %}">{{feed.user.username}}</a>
+        </div>    
+      </div>
     </div>
     <img src="{{feed.image_url.url}}" class="card-img-top" alt="...">
     <div class="">
@@ -44,30 +60,123 @@
           <form action="{% url 'feeds:like' feed.pk %}" method='POST'>
             {% csrf_token %}
             {% if request.user in feed.like_users.all %}
-            <button class='btn p-2 ps-0'><svg aria-label="좋아요 취소" class="_8-yf5 " color="#ed4956" fill="#ed4956" height="24" role="img" viewBox="0 0 48 48" width="24"><path d="M34.6 3.1c-4.5 0-7.9 1.8-10.6 5.6-2.7-3.7-6.1-5.5-10.6-5.5C6 3.1 0 9.6 0 17.6c0 7.3 5.4 12 10.6 16.5.6.5 1.3 1.1 1.9 1.7l2.3 2c4.4 3.9 6.6 5.9 7.6 6.5.5.3 1.1.5 1.6.5s1.1-.2 1.6-.5c1-.6 2.8-2.2 7.8-6.8l2-1.8c.7-.6 1.3-1.2 2-1.7C42.7 29.6 48 25 48 17.6c0-8-6-14.5-13.4-14.5z"></path>
-            </svg></button>
+            <button class='btn p-2 ps-0'><svg aria-label="좋아요 취소" class="_8-yf5 " color="#ed4956" fill="#ed4956" height="24" role="img" viewBox="0 0 48 48" width="24"><path d="M34.6 3.1c-4.5 0-7.9 1.8-10.6 5.6-2.7-3.7-6.1-5.5-10.6-5.5C6 3.1 0 9.6 0 17.6c0 7.3 5.4 12 10.6 16.5.6.5 1.3 1.1 1.9 1.7l2.3 2c4.4 3.9 6.6 5.9 7.6 6.5.5.3 1.1.5 1.6.5s1.1-.2 1.6-.5c1-.6 2.8-2.2 7.8-6.8l2-1.8c.7-.6 1.3-1.2 2-1.7C42.7 29.6 48 25 48 17.6c0-8-6-14.5-13.4-14.5z"></path></svg></button>
             {% else %}
-            <button class='btn p-2 ps-0'><svg aria-label="좋아요" class="_8-yf5 " color="#8e8e8e" fill="#8e8e8e" height="24" role="img" viewBox="0 0 24 24" width="24"><path d="M16.792 3.904A4.989 4.989 0 0121.5 9.122c0 3.072-2.652 4.959-5.197 7.222-2.512 2.243-3.865 3.469-4.303 3.752-.477-.309-2.143-1.823-4.303-3.752C5.141 14.072 2.5 12.167 2.5 9.122a4.989 4.989 0 014.708-5.218 4.21 4.21 0 013.675 1.941c.84 1.175.98 1.763 1.12 1.763s.278-.588 1.11-1.766a4.17 4.17 0 013.679-1.938m0-2a6.04 6.04 0 00-4.797 2.127 6.052 6.052 0 00-4.787-2.127A6.985 6.985 0 00.5 9.122c0 3.61 2.55 5.827 5.015 7.97.283.246.569.494.853.747l1.027.918a44.998 44.998 0 003.518 3.018 2 2 0 002.174 0 45.263 45.263 0 003.626-3.115l.922-.824c.293-.26.59-.519.885-.774 2.334-2.025 4.98-4.32 4.98-7.94a6.985 6.985 0 00-6.708-7.218z"></path>
+            <button class='btn p-2 ps-0'><svg aria-label="좋아요" class="_8-yf5 " color="black" fill="black" height="24" role="img" viewBox="0 0 24 24" width="24"><path d="M16.792 3.904A4.989 4.989 0 0121.5 9.122c0 3.072-2.652 4.959-5.197 7.222-2.512 2.243-3.865 3.469-4.303 3.752-.477-.309-2.143-1.823-4.303-3.752C5.141 14.072 2.5 12.167 2.5 9.122a4.989 4.989 0 014.708-5.218 4.21 4.21 0 013.675 1.941c.84 1.175.98 1.763 1.12 1.763s.278-.588 1.11-1.766a4.17 4.17 0 013.679-1.938m0-2a6.04 6.04 0 00-4.797 2.127 6.052 6.052 0 00-4.787-2.127A6.985 6.985 0 00.5 9.122c0 3.61 2.55 5.827 5.015 7.97.283.246.569.494.853.747l1.027.918a44.998 44.998 0 003.518 3.018 2 2 0 002.174 0 45.263 45.263 0 003.626-3.115l.922-.824c.293-.26.59-.519.885-.774 2.334-2.025 4.98-4.32 4.98-7.94a6.985 6.985 0 00-6.708-7.218z"></path>
             </svg></button>
             {% endif %}
           </form>
-          <a href="{% url 'feeds:detail' feed.pk %}"><button class='btn p-2'><svg aria-label="댓글 달기" class="_8-yf5 " color="#8e8e8e" fill="#8e8e8e" height="24" role="img" viewBox="0 0 24 24" width="24"><path d="M20.656 17.008a9.993 9.993 0 10-3.59 3.615L22 22z" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="2"></path>
-          </svg></button></a>
+          <a href='#' class='btn p-2' data-bs-toggle="modal" data-bs-target="#exampleModal{{feed.pk}}">
+            <svg aria-label="댓글 달기" class="_8-yf5 " color="black" fill="#8e8e8e" height="24" role="img" viewBox="0 0 24 24" width="24"><path d="M20.656 17.008a9.993 9.993 0 10-3.59 3.615L22 22z" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="2"></path>
+            </svg>
+          </a>
         </div>
         <form action="{% url 'feeds:bookmark' feed.pk %}" method='POST'>
           {% csrf_token %}
           {% if request.user in feed.bookmark_user.all %}
-          <button class='btn p-2'><svg aria-label="삭제" class="_8-yf5 " color="#262626" fill="#262626" height="24" role="img" viewBox="0 0 24 24" width="24"><path d="M20 22a.999.999 0 01-.687-.273L12 14.815l-7.313 6.912A1 1 0 013 21V3a1 1 0 011-1h16a1 1 0 011 1v18a1 1 0 01-1 1z"></path>
+          <button class='btn p-2'><svg aria-label="삭제" class="_8-yf5 " color="black" fill="black" height="24" role="img" viewBox="0 0 24 24" width="24"><path d="M20 22a.999.999 0 01-.687-.273L12 14.815l-7.313 6.912A1 1 0 013 21V3a1 1 0 011-1h16a1 1 0 011 1v18a1 1 0 01-1 1z"></path>
           </svg></button>
           {% else %}
-          <button class='btn p-2'><svg aria-label="저장" class="_8-yf5 " color="#8e8e8e" fill="#8e8e8e" height="24" role="img" viewBox="0 0 24 24" width="24"><polygon fill="none" points="20 21 12 13.44 4 21 4 3 20 3 20 21" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></polygon>
+          <button class='btn p-2'><svg aria-label="저장" class="_8-yf5 " color="black" fill="black" height="24" role="img" viewBox="0 0 24 24" width="24"><polygon fill="none" points="20 21 12 13.44 4 21 4 3 20 3 20 21" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></polygon>
           </svg></button>
           {% endif %}
         </form>
       </div>
+      <div style='padding-left:16px; margin-bottom:8px; font-size:14px;'>
+        <p class='m-0 fw-bold'>좋아요 {{feed.like_users.all|length}}개</p>
+      </div>
       <div style='font-size:14px; padding:0px 16px;'>
         <p class="m-0" style=''><a href='{% url 'accounts:profile' feed.user.username %}' class='fw-bold text-decoration-none text-black' >{{feed.user.username}}</a> {{ feed.content }}</p>
         <a href="{% url 'feeds:detail' feed.pk %}" style='color:gray; text-decoration:none;'>댓글 모두 보기</a>
+        <!-- Button trigger modal -->
+        <a href='#' style='color:gray; text-decoration:none;' data-bs-toggle="modal" data-bs-target="#exampleModal{{feed.pk}}">
+          {% if feed.feed_comments.all|length %}
+          댓글 {{feed.feed_comments.all|length}}개 모두 보기
+          {% else %}
+          댓글 달기
+          {% endif %}
+        </a>
+
+        <!-- Modal -->
+        <div class="modal fade feed-modal" id="exampleModal{{feed.pk}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content d-flex flex-row justify-content-between">
+              {% comment %} 사진 구역 {% endcomment %}
+              <div class="modal-header p-0 bg-black" style='width:calc(100% - 404px);'>
+                <img src="{{feed.image_url.url}}" alt="" style='width:100%'>
+              </div>
+              <div style='width:404px'>
+                {% comment %} 상단 이름 {% endcomment %}
+                <div class='d-flex align-items-center justify-content-between' style='padding:14px 4px 14px 16px; height:60px'>
+                  <div class='d-flex align-items-center'>
+                    {% if feed.user.image_url %}
+                    <img src="{{feed.user.image_url.url}}" alt="" width='32' height='32' style='border-radius:50%;'>
+                    {% else %}
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
+                      <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
+                      <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"/>
+                    </svg> 
+                    {% endif %}
+                    <div>
+                      <a class='name fw-bold' href="{% url 'accounts:profile' feed.user.username %}">{{feed.user.username}}</a>
+                      {% if request.user == feed.user %}
+                      {% else %}
+                      •
+                        {% if request.user in feed.user.followers.all %}
+                          <span class='fw-bold'>
+                            팔로잉
+                          </span>
+                        {% else %}
+                          <span class='fw-bold text-primary'>
+                            팔로우
+                          </span>
+                        {% endif %}
+                      
+                      {% endif %}
+                    </div>
+                  </div>
+                  <button type="button" class="btn" data-bs-dismiss="modal" aria-label="Close"><svg aria-label="옵션 더 보기" class="_8-yf5 " color="#262626" fill="#262626" height="24" role="img" viewBox="0 0 24 24" width="24"><circle cx="12" cy="12" r="1.5"></circle><circle cx="6" cy="12" r="1.5"></circle><circle cx="18" cy="12" r="1.5"></circle>
+                  </svg></button>
+                </div>
+                {% comment %} 본문, 댓글 {% endcomment %}
+                <div class="modal-body p-0 d-flex border-top">
+                  <div class='d-flex justify-content-between' style='padding:14px 4px 14px 16px;'>
+                    <div class='d-flex align-items-start'>
+                      {% if feed.user.image_url %}
+                      <img src="{{feed.user.image_url.url}}" alt="" width='32' height='32' style='border-radius:50%;'>
+                      {% else %}
+                      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
+                        <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
+                        <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"/>
+                      </svg> 
+                      {% endif %}
+                      <div style='padding-left:14px;'>
+                        <a class='name fw-bold m-0' href="{% url 'accounts:profile' feed.user.username %}">{{feed.user.username}}</a>
+                        <span style=''>{{feed.content}}</span>
+                        <div>
+                          <p style='font-size:12px; margin-top:10px'>{{feed.created_at}}</p>
+                        </div>
+                      </div>                      
+                    </div>
+                  </div>
+                </div>
+                {% comment %} 각종 버튼, 좋아요 {% endcomment %}
+                <div class="modal-button p-0 d-flex align-items-start border-top">
+                  <div class='d-flex justify-content-between' style='padding:14px 4px 14px 16px; height:60px'>
+                    <div class='d-flex align-items-start'>
+                      dd                 
+                    </div>
+                  </div>
+                </div>
+                {% comment %} 댓글 달기 {% endcomment %}
+                <div class="modal-reply d-flex align-items-center border-top justify-content-between" style='padding:6px 16px; height:52px;'>
+                  <textarea aria-label="댓글 달기..." data-testid="post-comment-text-area" placeholder="댓글 달기..." class="p-0 border-0" style="height: 18px !important; width:304px; resize:none; overflow: hidden;}"></textarea>
+                  <button class='btn text-primary p-0' style='font-size:14px;'>게시</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
       <div style='margin-bottom: 16px; padding-left: 16px; font-size:10px'>
         <p>{{feed.created_at}}</p>
@@ -77,4 +186,3 @@
   {% endfor %}
 </div>
   {% endblock content %}
-  
