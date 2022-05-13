@@ -24,7 +24,7 @@
   margin:0;
   max-width:none;
 }
-textarea:focus {
+input:focus {
   outline:none;
 }
 {% endblock  %}
@@ -224,7 +224,7 @@ textarea:focus {
                 <div class="modal-reply border-top d-flex align-items-center" style='padding:6px 16px; height:52px; width:100%'>
                   <form action="{% url 'feeds:comment_create' feed.pk %}" method="POST" class='d-flex align-items-center justify-content-between comment-form' style='width:100%' data-feed-id="{{ feed.pk }}">
                     {% csrf_token %}
-                    <label for="id_content"></label><textarea name="content" placeholder="댓글 달기..." class="p-0 border-0" style="height: 18px !important; width:calc(100% - 30px); resize:none; overflow: hidden;}" id="id_content_{{feed.pk}}" required></textarea>
+                    <label for="id_content"></label><input type='text' name="content" placeholder="댓글 달기..." class="p-0 border-0" style="height: 18px !important; width:calc(100% - 30px); resize:none; border:none;" id="id_content_{{feed.pk}}" required></input>
                     <button class='btn text-primary p-0 m-0' style='font-size:14px;'>게시</button>
                   </form>
                 </div>
@@ -399,8 +399,7 @@ textarea:focus {
     {% comment %} 댓글등록 {% endcomment %}
     function updateCommentStatus(feedId, username, content, created_at) {
       const commentList = document.querySelector(`#comment-list-${feedId}`)
-      console.log(commentList)
-      commentList.innerHTML += `<div class='d-flex align-items-start'><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
+      commentList.innerHTML += `<div class='d-flex align-items-start' ><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
         <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
         <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"/>
       </svg><div class='d-flex align-items-start'>
@@ -416,24 +415,23 @@ textarea:focus {
 
     async function onSubmit_comment(event) {
       event.preventDefault()
-      console.log(event)
 
       const feedId = event.target.dataset.feedId
       const url = `http://127.0.0.1:8000/${feedId}/comment/create/`
 
-      let content1 = document.querySelector(`#id_content_${feedId}`).value
-      console.log(content1)
+      let content1 = document.querySelector(`#id_content_${feedId}`)
 
       let data = new FormData()
 
-      data.append('content',content1)
+      data.append('content',content1.value)
       data.append("csrfmiddlewaretoken", '{{csrf_token}}')
 
       const response = await axios.post(url, data)
       const { username, content, created_at } = response.data 
-      console.log(response)
 
       updateCommentStatus(feedId, username, content, created_at)
+
+      content1.value = ''
     }
     
     function attachEvent_comment(form) {
