@@ -43,6 +43,7 @@ class Feed(models.Model):
 
 class Comment(models.Model):
     content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
@@ -53,4 +54,10 @@ class Comment(models.Model):
         Feed,
         on_delete=models.CASCADE,
         related_name='feed_comments'
+    )
+
+    like_users = models.ManyToManyField(
+        settings.AUTH_USER_MODEL,
+        blank=True,
+        related_name='like_comments'
     )

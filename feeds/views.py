@@ -1,4 +1,7 @@
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render, redirect
+from django.views.decorators.http import require_POST
+from django.contrib.auth.decorators import login_required
 
 from insta.settings import AUTH_USER_MODEL
 from .models import Feed, Comment, Hashtag
@@ -89,40 +92,54 @@ def delete(request, feed_pk):
             return redirect('feeds:index')
     return redirect('accounts:login')
 
+@require_POST
+@login_required
 def like(request, feed_pk):
+    # 응답 객체 초기화
+    response = {
+        'liked':False,
+        'count':0,
+    }
     if request.user.is_authenticated:
-        if request.method == 'POST':
-            feed = get_object_or_404(Feed,pk=feed_pk)
-            user = request.user
+        feed = get_object_or_404(Feed,pk=feed_pk)
+        user = request.user
 
-            if feed.like_users.filter(pk=user.pk).exists():
-                feed.like_users.remove(user)
-            
-            else:
-                feed.like_users.add(user)
-            
-            return redirect('feeds:index')
-    return redirect('accounts:login')
 
+        if feed.like_users.filter(pk=user.pk).exists():
+            feed.like_users.remove(user)
+        
+        else:
+            feed.like_users.add(user)
+            response['liked'] = True
+        
+        response['count'] = feed.like_users.count()
+        
+        return JsonResponse(response)
+    return JsonResponse(response)
+
+@require_POST
 def comment_create(request, feed_pk):
+    response = {
+        "username" : '',
+        'content' : '',
+        'created_at' : '',
+    }
     if request.user.is_authenticated:
-        if request.method == 'POST':
-            feed = get_object_or_404(Feed, pk=feed_pk)
-            form = CommentForm(data=request.POST)
-            comments = Comment.objects.filter(user=request.user)
-            if form.is_valid():
-                comment = form.save(commit=False)
-                comment.user = request.user
-                comment.feed = feed
-                comment.save()
-                return redirect('feeds:detail', feed_pk)
-            context = {
-                'feed': feed,
-                'comments': comments,
-                'form': form,
-            }
-            return render(request, 'feeds/detail.html', context)
-    return redirect('accounts:login')
+        feed = get_object_or_404(Feed, pk=feed_pk)
+        form = CommentForm(data=request.POST)
+        
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.user = request.user
+            comment.feed = feed
+            comment.save()
+            response['username'] = comment.user.username
+            response['content'] = comment.content
+            response['created_at'] = comment.created_at
+            print(response)
+            return JsonResponse(response)
+    print('오류')
+    JsonResponse(response)
 
 def comment_update(request, feed_pk, comment_pk):
     if request.user.is_authenticated:
@@ -158,15 +175,22 @@ def comment_delete(request, feed_pk, comment_pk):
             return redirect('feeds:detail', feed_pk)
     return redirect('accounts:login')
 
+@require_POST
 def bookmark(request, feed_pk):
-    if request.user.is_authenticated:
-        if request.method=='POST':
-            feed = get_object_or_404(Feed, pk=feed_pk)
-            user = request.user
-            if feed.bookmark_user.filter(pk=user.pk).exists():
-                feed.bookmark_user.remove(user)
-            else:
-                feed.bookmark_user.add(user)
+    # 응답 객체 초기화 
+    response = {
+        "booked": False,
+    }
 
-            return redirect('feeds:index')
-    return redirect('accounts:login')
+    if request.user.is_authenticated:
+        feed = get_object_or_404(Feed, pk=feed_pk)
+        user = request.user
+
+        if feed.bookmark_user.filter(pk=user.pk).exists():
+            feed.bookmark_user.remove(user)
+        else:
+            feed.bookmark_user.add(user)
+            response['booked'] = True
+
+        return JsonResponse(response)
+    return JsonResponse(response)

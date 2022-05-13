@@ -31,6 +31,11 @@ textarea:focus {
 
 
 {% block content %}
+<form action="" method='POST'>
+  {% csrf_token %}
+  {{form.as_p}}
+</form>
+
 <div class='d-flex flex-column align-items-center'>
 
   {% for feed in feeds %}
@@ -57,12 +62,13 @@ textarea:focus {
     <div class="">
       <div class='d-flex justify-content-between' style='padding:6px 16px 8px;'>
         <div class='d-flex justify-content-between'>
-          <form action="{% url 'feeds:like' feed.pk %}" method='POST'>
+          {% comment %} 좋아요 버튼 {% endcomment %}
+          <form action="{% url 'feeds:like' feed.pk %}" method='POST' class='like-form' data-feed-id="{{ feed.pk }}">
             {% csrf_token %}
             {% if request.user in feed.like_users.all %}
-            <button class='btn p-2 ps-0'><svg aria-label="좋아요 취소" class="_8-yf5 " color="#ed4956" fill="#ed4956" height="24" role="img" viewBox="0 0 48 48" width="24"><path d="M34.6 3.1c-4.5 0-7.9 1.8-10.6 5.6-2.7-3.7-6.1-5.5-10.6-5.5C6 3.1 0 9.6 0 17.6c0 7.3 5.4 12 10.6 16.5.6.5 1.3 1.1 1.9 1.7l2.3 2c4.4 3.9 6.6 5.9 7.6 6.5.5.3 1.1.5 1.6.5s1.1-.2 1.6-.5c1-.6 2.8-2.2 7.8-6.8l2-1.8c.7-.6 1.3-1.2 2-1.7C42.7 29.6 48 25 48 17.6c0-8-6-14.5-13.4-14.5z"></path></svg></button>
+            <button class='btn p-2 ps-0' id="like-{{ feed.pk }}"><svg aria-label="좋아요 취소" class="_8-yf5 " color="#ed4956" fill="#ed4956" height="24" role="img" viewBox="0 0 48 48" width="24"><path d="M34.6 3.1c-4.5 0-7.9 1.8-10.6 5.6-2.7-3.7-6.1-5.5-10.6-5.5C6 3.1 0 9.6 0 17.6c0 7.3 5.4 12 10.6 16.5.6.5 1.3 1.1 1.9 1.7l2.3 2c4.4 3.9 6.6 5.9 7.6 6.5.5.3 1.1.5 1.6.5s1.1-.2 1.6-.5c1-.6 2.8-2.2 7.8-6.8l2-1.8c.7-.6 1.3-1.2 2-1.7C42.7 29.6 48 25 48 17.6c0-8-6-14.5-13.4-14.5z"></path></svg></button>
             {% else %}
-            <button class='btn p-2 ps-0'><svg aria-label="좋아요" class="_8-yf5 " color="black" fill="black" height="24" role="img" viewBox="0 0 24 24" width="24"><path d="M16.792 3.904A4.989 4.989 0 0121.5 9.122c0 3.072-2.652 4.959-5.197 7.222-2.512 2.243-3.865 3.469-4.303 3.752-.477-.309-2.143-1.823-4.303-3.752C5.141 14.072 2.5 12.167 2.5 9.122a4.989 4.989 0 014.708-5.218 4.21 4.21 0 013.675 1.941c.84 1.175.98 1.763 1.12 1.763s.278-.588 1.11-1.766a4.17 4.17 0 013.679-1.938m0-2a6.04 6.04 0 00-4.797 2.127 6.052 6.052 0 00-4.787-2.127A6.985 6.985 0 00.5 9.122c0 3.61 2.55 5.827 5.015 7.97.283.246.569.494.853.747l1.027.918a44.998 44.998 0 003.518 3.018 2 2 0 002.174 0 45.263 45.263 0 003.626-3.115l.922-.824c.293-.26.59-.519.885-.774 2.334-2.025 4.98-4.32 4.98-7.94a6.985 6.985 0 00-6.708-7.218z"></path>
+            <button class='btn p-2 ps-0' id="like-{{ feed.pk }}"><svg aria-label="좋아요" class="_8-yf5 " color="black" fill="black" height="24" role="img" viewBox="0 0 24 24" width="24"><path d="M16.792 3.904A4.989 4.989 0 0121.5 9.122c0 3.072-2.652 4.959-5.197 7.222-2.512 2.243-3.865 3.469-4.303 3.752-.477-.309-2.143-1.823-4.303-3.752C5.141 14.072 2.5 12.167 2.5 9.122a4.989 4.989 0 014.708-5.218 4.21 4.21 0 013.675 1.941c.84 1.175.98 1.763 1.12 1.763s.278-.588 1.11-1.766a4.17 4.17 0 013.679-1.938m0-2a6.04 6.04 0 00-4.797 2.127 6.052 6.052 0 00-4.787-2.127A6.985 6.985 0 00.5 9.122c0 3.61 2.55 5.827 5.015 7.97.283.246.569.494.853.747l1.027.918a44.998 44.998 0 003.518 3.018 2 2 0 002.174 0 45.263 45.263 0 003.626-3.115l.922-.824c.293-.26.59-.519.885-.774 2.334-2.025 4.98-4.32 4.98-7.94a6.985 6.985 0 00-6.708-7.218z"></path>
             </svg></button>
             {% endif %}
           </form>
@@ -71,23 +77,23 @@ textarea:focus {
             </svg>
           </a>
         </div>
-        <form action="{% url 'feeds:bookmark' feed.pk %}" method='POST'>
+        {% comment %} 북마크 버튼 {% endcomment %}
+        <form action="{% url 'feeds:bookmark' feed.pk %} " method='POST' class='book-form' data-feed-id="{{ feed.pk }}">
           {% csrf_token %}
           {% if request.user in feed.bookmark_user.all %}
-          <button class='btn p-2'><svg aria-label="삭제" class="_8-yf5 " color="black" fill="black" height="24" role="img" viewBox="0 0 24 24" width="24"><path d="M20 22a.999.999 0 01-.687-.273L12 14.815l-7.313 6.912A1 1 0 013 21V3a1 1 0 011-1h16a1 1 0 011 1v18a1 1 0 01-1 1z"></path>
+          <button class='btn p-2' id="book-{{ feed.pk }}"><svg aria-label="삭제" class="_8-yf5 " color="black" fill="black" height="24" role="img" viewBox="0 0 24 24" width="24"><path d="M20 22a.999.999 0 01-.687-.273L12 14.815l-7.313 6.912A1 1 0 013 21V3a1 1 0 011-1h16a1 1 0 011 1v18a1 1 0 01-1 1z"></path>
           </svg></button>
           {% else %}
-          <button class='btn p-2'><svg aria-label="저장" class="_8-yf5 " color="black" fill="black" height="24" role="img" viewBox="0 0 24 24" width="24"><polygon fill="none" points="20 21 12 13.44 4 21 4 3 20 3 20 21" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></polygon>
+          <button class='btn p-2' id="book-{{ feed.pk }}"><svg aria-label="저장" class="_8-yf5 " color="black" fill="black" height="24" role="img" viewBox="0 0 24 24" width="24"><polygon fill="none" points="20 21 12 13.44 4 21 4 3 20 3 20 21" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></polygon>
           </svg></button>
           {% endif %}
         </form>
       </div>
       <div style='padding-left:16px; margin-bottom:8px; font-size:14px;'>
-        <p class='m-0 fw-bold'>좋아요 {{feed.like_users.all|length}}개</p>
+        <p class='m-0 fw-bold'>좋아요 <span id="like-count-{{ feed.pk }}">{{feed.like_users.all|length}}</span>개</p>
       </div>
       <div style='font-size:14px; padding:0px 16px;'>
         <p class="m-0" style=''><a href='{% url 'accounts:profile' feed.user.username %}' class='fw-bold text-decoration-none text-black' >{{feed.user.username}}</a> {{ feed.content }}</p>
-        <a href="{% url 'feeds:detail' feed.pk %}" style='color:gray; text-decoration:none;'>댓글 모두 보기</a>
         <!-- Button trigger modal -->
         <a href='#' style='color:gray; text-decoration:none;' data-bs-toggle="modal" data-bs-target="#exampleModal{{feed.pk}}">
           {% if feed.feed_comments.all|length %}
@@ -99,49 +105,17 @@ textarea:focus {
 
         <!-- Modal -->
         <div class="modal fade feed-modal" id="exampleModal{{feed.pk}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-          <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content d-flex flex-row justify-content-between">
+          <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content d-flex flex-row justify-content-between" style="min-height:450px;">
               {% comment %} 사진 구역 {% endcomment %}
               <div class="modal-header p-0 bg-black" style='width:calc(100% - 404px);'>
                 <img src="{{feed.image_url.url}}" alt="" style='width:100%'>
               </div>
-              <div style='width:404px'>
-                {% comment %} 상단 이름 {% endcomment %}
-                <div class='d-flex align-items-center justify-content-between' style='padding:14px 4px 14px 16px; height:60px'>
-                  <div class='d-flex align-items-center'>
-                    {% if feed.user.image_url %}
-                    <img src="{{feed.user.image_url.url}}" alt="" width='32' height='32' style='border-radius:50%;'>
-                    {% else %}
-                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
-                      <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
-                      <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"/>
-                    </svg> 
-                    {% endif %}
-                    <div>
-                      <a class='name fw-bold' href="{% url 'accounts:profile' feed.user.username %}">{{feed.user.username}}</a>
-                      {% if request.user == feed.user %}
-                      {% else %}
-                      •
-                        {% if request.user in feed.user.followers.all %}
-                          <span class='fw-bold'>
-                            팔로잉
-                          </span>
-                        {% else %}
-                          <span class='fw-bold text-primary'>
-                            팔로우
-                          </span>
-                        {% endif %}
-                      
-                      {% endif %}
-                    </div>
-                  </div>
-                  <button type="button" class="btn" data-bs-dismiss="modal" aria-label="Close"><svg aria-label="옵션 더 보기" class="_8-yf5 " color="#262626" fill="#262626" height="24" role="img" viewBox="0 0 24 24" width="24"><circle cx="12" cy="12" r="1.5"></circle><circle cx="6" cy="12" r="1.5"></circle><circle cx="18" cy="12" r="1.5"></circle>
-                  </svg></button>
-                </div>
-                {% comment %} 본문, 댓글 {% endcomment %}
-                <div class="modal-body p-0 d-flex border-top">
-                  <div class='d-flex justify-content-between' style='padding:14px 4px 14px 16px;'>
-                    <div class='d-flex align-items-start'>
+              <div style='width:404px' class='d-flex flex-column justify-content-between'>
+                <div style='width:404px'>
+                  {% comment %} 상단 이름 {% endcomment %}
+                  <div class='d-flex align-items-center justify-content-between' style='padding:14px 4px 14px 16px; height:60px'>
+                    <div class='d-flex align-items-center'>
                       {% if feed.user.image_url %}
                       <img src="{{feed.user.image_url.url}}" alt="" width='32' height='32' style='border-radius:50%;'>
                       {% else %}
@@ -150,34 +124,127 @@ textarea:focus {
                         <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"/>
                       </svg> 
                       {% endif %}
-                      <div style='padding-left:14px;'>
-                        <a class='name fw-bold m-0' href="{% url 'accounts:profile' feed.user.username %}">{{feed.user.username}}</a>
-                        <span style=''>{{feed.content}}</span>
-                        <div>
-                          <p style='font-size:12px; margin-top:10px'>{{feed.created_at}}</p>
+                      <div>
+                        <a class='name fw-bold' href="{% url 'accounts:profile' feed.user.username %}">{{feed.user.username}}</a>
+                        {% if request.user == feed.user %}
+                        {% else %}
+                        •
+                          {% if request.user in feed.user.followers.all %}
+                            <span class='fw-bold'>
+                              팔로잉
+                            </span>
+                          {% else %}
+                            <span class='fw-bold text-primary'>
+                              팔로우
+                            </span>
+                          {% endif %}
+                        
+                        {% endif %}
+                      </div>
+                    </div>
+                    <button type="button" class="btn" data-bs-dismiss="modal" aria-label="Close"><svg aria-label="옵션 더 보기" class="_8-yf5 " color="#262626" fill="#262626" height="24" role="img" viewBox="0 0 24 24" width="24"><circle cx="12" cy="12" r="1.5"></circle><circle cx="6" cy="12" r="1.5"></circle><circle cx="18" cy="12" r="1.5"></circle>
+                    </svg></button>
+                  </div>
+                  {% comment %} 본문, 댓글 {% endcomment %}
+                  <div class="modal-body p-0 d-flex border-top" style='position:absolute; z-index:0; height:calc(100% - 172px); width:404px'>
+                    <div id="comment-list-{{ feed.pk }}" style='padding:16px;'>
+                      <div class='d-flex align-items-start'>
+                        {% if feed.user.image_url %}
+                        <img src="{{feed.user.image_url.url}}" alt="" width='32' height='32' style='border-radius:50%;'>
+                        {% else %}
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
+                          <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
+                          <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"/>
+                        </svg> 
+                        {% endif %}
+                        <div style='padding-left:14px;'>
+                          <a class='name fw-bold m-0' href="{% url 'accounts:profile' feed.user.username %}">{{feed.user.username}}</a>
+                          <span style=''>{{feed.content}}</span>
+                          <div>
+                            <p style='font-size:12px; margin-top:10px'>{{feed.created_at}}</p>
+                          </div>
+                        </div>                      
+                      </div>
+                      {% if feed.feed_comments.all %}
+                      {% for comment in feed.feed_comments.all %}
+                      <div class='d-flex align-items-start'>
+                        {% if feed.user.image_url %}
+                        <img src="{{feed.user.image_url.url}}" alt="" width='32' height='32' style='border-radius:50%;'>
+                        {% else %}
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
+                          <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
+                          <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"/>
+                        </svg> 
+                        {% endif %}
+                        <div style='padding-left:14px;'>
+                          <a class='name fw-bold m-0' href="{% url 'accounts:profile' feed.user.username %}">{{comment.user.username}}</a>
+                          <span style=''>{{comment.content}}</span>
+                          <div>
+                            <p style='font-size:12px; margin-top:10px'>{{comment.created_at}}</p>
+                          </div>
                         </div>
-                      </div>                      
+                      </div>
+                      {% endfor %}
+                      {% endif %}
                     </div>
                   </div>
                 </div>
-                {% comment %} 각종 버튼, 좋아요 {% endcomment %}
-                <div class="modal-button p-0 d-flex align-items-start border-top">
-                  <div class='d-flex justify-content-between' style='padding:14px 4px 14px 16px; height:60px'>
-                    <div class='d-flex align-items-start'>
-                      dd                 
+                <div class='bg-white' style='position:relative; z-index:1;'>
+                  {% comment %} 각종 버튼, 좋아요 {% endcomment %}
+                  <div class='modal-button d-flex justify-content-between border-top' style='padding:6px 16px 8px; height:60px'>
+                    <div class='d-flex justify-content-between'>
+                      {% comment %} 좋아요 버튼 {% endcomment %}
+                      <form action="{% url 'feeds:like' feed.pk %}" method='POST' class='like-form2' data-feed-id="{{ feed.pk }}">
+                        {% csrf_token %}
+                        {% if request.user in feed.like_users.all %}
+                        <button class='btn p-2 ps-0' id="like2-{{ feed.pk }}"><svg aria-label="좋아요 취소" class="_8-yf5 " color="#ed4956" fill="#ed4956" height="24" role="img" viewBox="0 0 48 48" width="24"><path d="M34.6 3.1c-4.5 0-7.9 1.8-10.6 5.6-2.7-3.7-6.1-5.5-10.6-5.5C6 3.1 0 9.6 0 17.6c0 7.3 5.4 12 10.6 16.5.6.5 1.3 1.1 1.9 1.7l2.3 2c4.4 3.9 6.6 5.9 7.6 6.5.5.3 1.1.5 1.6.5s1.1-.2 1.6-.5c1-.6 2.8-2.2 7.8-6.8l2-1.8c.7-.6 1.3-1.2 2-1.7C42.7 29.6 48 25 48 17.6c0-8-6-14.5-13.4-14.5z"></path></svg></button>
+                        {% else %}
+                        <button class='btn p-2 ps-0' id="like2-{{ feed.pk }}"><svg aria-label="좋아요" class="_8-yf5 " color="black" fill="black" height="24" role="img" viewBox="0 0 24 24" width="24"><path d="M16.792 3.904A4.989 4.989 0 0121.5 9.122c0 3.072-2.652 4.959-5.197 7.222-2.512 2.243-3.865 3.469-4.303 3.752-.477-.309-2.143-1.823-4.303-3.752C5.141 14.072 2.5 12.167 2.5 9.122a4.989 4.989 0 014.708-5.218 4.21 4.21 0 013.675 1.941c.84 1.175.98 1.763 1.12 1.763s.278-.588 1.11-1.766a4.17 4.17 0 013.679-1.938m0-2a6.04 6.04 0 00-4.797 2.127 6.052 6.052 0 00-4.787-2.127A6.985 6.985 0 00.5 9.122c0 3.61 2.55 5.827 5.015 7.97.283.246.569.494.853.747l1.027.918a44.998 44.998 0 003.518 3.018 2 2 0 002.174 0 45.263 45.263 0 003.626-3.115l.922-.824c.293-.26.59-.519.885-.774 2.334-2.025 4.98-4.32 4.98-7.94a6.985 6.985 0 00-6.708-7.218z"></path>
+                        </svg></button>
+                        {% endif %}
+                      </form>
+                      <a href='#' class='btn p-2'>
+                        <svg aria-label="댓글 달기" class="_8-yf5 " color="black" fill="#8e8e8e" height="24" role="img" viewBox="0 0 24 24" width="24"><path d="M20.656 17.008a9.993 9.993 0 10-3.59 3.615L22 22z" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="2"></path>
+                        </svg>
+                      </a>
                     </div>
-                  </div>
+                    {% comment %} 북마크 버튼 {% endcomment %}
+                    <form action="{% url 'feeds:bookmark' feed.pk %} " method='POST' class='book-form2' data-feed-id="{{ feed.pk }}">
+                      {% csrf_token %}
+                      {% if request.user in feed.bookmark_user.all %}
+                      <button class='btn p-2' id="book2-{{ feed.pk }}"><svg aria-label="삭제" class="_8-yf5 " color="black" fill="black" height="24" role="img" viewBox="0 0 24 24" width="24"><path d="M20 22a.999.999 0 01-.687-.273L12 14.815l-7.313 6.912A1 1 0 013 21V3a1 1 0 011-1h16a1 1 0 011 1v18a1 1 0 01-1 1z"></path>
+                      </svg></button>
+                      {% else %}
+                      <button class='btn p-2' id="book2-{{ feed.pk }}"><svg aria-label="저장" class="_8-yf5 " color="black" fill="black" height="24" role="img" viewBox="0 0 24 24" width="24"><polygon fill="none" points="20 21 12 13.44 4 21 4 3 20 3 20 21" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></polygon>
+                      </svg></button>
+                      {% endif %}
+                    </form>               
                 </div>
                 {% comment %} 댓글 달기 {% endcomment %}
-                <div class="modal-reply d-flex align-items-center border-top justify-content-between" style='padding:6px 16px; height:52px;'>
-                  <textarea aria-label="댓글 달기..." data-testid="post-comment-text-area" placeholder="댓글 달기..." class="p-0 border-0" style="height: 18px !important; width:304px; resize:none; overflow: hidden;}"></textarea>
-                  <button class='btn text-primary p-0' style='font-size:14px;'>게시</button>
+                <div class="modal-reply border-top d-flex align-items-center" style='padding:6px 16px; height:52px; width:100%'>
+                  <form action="{% url 'feeds:comment_create' feed.pk %}" method="POST" class='d-flex align-items-center justify-content-between comment-form' style='width:100%' data-feed-id="{{ feed.pk }}">
+                    {% csrf_token %}
+                    <label for="id_content"></label><textarea name="content" placeholder="댓글 달기..." class="p-0 border-0" style="height: 18px !important; width:calc(100% - 30px); resize:none; overflow: hidden;}" id="id_content_{{feed.pk}}" required></textarea>
+                    <button class='btn text-primary p-0 m-0' style='font-size:14px;'>게시</button>
+                  </form>
                 </div>
+              </div>
               </div>
             </div>
           </div>
         </div>
+        {% comment %} 댓글목록 {% endcomment %}
+        <div>
+          {% if feed.feed_comments.all %}
+            {% for comment in feed.feed_comments.all|slice:':2' %}
+              <p style='font-size:14px;' class='m-0'>
+                <a class='fw-bold text-decoration-none text-black'>{{comment.user}}</a> {{comment.content}}
+              </p> 
+            {% endfor %}
+          {% endif %}
+        </div>
       </div>
+      {% comment %} 작성시간 {% endcomment %}
       <div style='margin-bottom: 16px; padding-left: 16px; font-size:10px'>
         <p>{{feed.created_at}}</p>
       </div>
@@ -186,3 +253,194 @@ textarea:focus {
   {% endfor %}
 </div>
   {% endblock content %}
+
+  {% block script %}
+  <script>
+    {% comment %} 좋아요 {% endcomment %}
+    function updateLikeStatus(feedId, liked, count) {
+      const likeBtn = document.querySelector(`#like-${feedId}`)
+      const likeCount = document.querySelector(`#like-count-${feedId}`)
+      likeBtn.innerHTML = liked ? '<svg aria-label="좋아요 취소" class="_8-yf5 " color="#ed4956" fill="#ed4956" height="24" role="img" viewBox="0 0 48 48" width="24"><path d="M34.6 3.1c-4.5 0-7.9 1.8-10.6 5.6-2.7-3.7-6.1-5.5-10.6-5.5C6 3.1 0 9.6 0 17.6c0 7.3 5.4 12 10.6 16.5.6.5 1.3 1.1 1.9 1.7l2.3 2c4.4 3.9 6.6 5.9 7.6 6.5.5.3 1.1.5 1.6.5s1.1-.2 1.6-.5c1-.6 2.8-2.2 7.8-6.8l2-1.8c.7-.6 1.3-1.2 2-1.7C42.7 29.6 48 25 48 17.6c0-8-6-14.5-13.4-14.5z"></path></svg>' : '<svg aria-label="좋아요" class="_8-yf5 " color="black" fill="black" height="24" role="img" viewBox="0 0 24 24" width="24"><path d="M16.792 3.904A4.989 4.989 0 0121.5 9.122c0 3.072-2.652 4.959-5.197 7.222-2.512 2.243-3.865 3.469-4.303 3.752-.477-.309-2.143-1.823-4.303-3.752C5.141 14.072 2.5 12.167 2.5 9.122a4.989 4.989 0 014.708-5.218 4.21 4.21 0 013.675 1.941c.84 1.175.98 1.763 1.12 1.763s.278-.588 1.11-1.766a4.17 4.17 0 013.679-1.938m0-2a6.04 6.04 0 00-4.797 2.127 6.052 6.052 0 00-4.787-2.127A6.985 6.985 0 00.5 9.122c0 3.61 2.55 5.827 5.015 7.97.283.246.569.494.853.747l1.027.918a44.998 44.998 0 003.518 3.018 2 2 0 002.174 0 45.263 45.263 0 003.626-3.115l.922-.824c.293-.26.59-.519.885-.774 2.334-2.025 4.98-4.32 4.98-7.94a6.985 6.985 0 00-6.708-7.218z"></path></svg>'
+      likeCount.innerText = count
+      const likeBtn2 = document.querySelector(`#like2-${feedId}`)
+      likeBtn2.innerHTML = liked ? '<svg aria-label="좋아요 취소" class="_8-yf5 " color="#ed4956" fill="#ed4956" height="24" role="img" viewBox="0 0 48 48" width="24"><path d="M34.6 3.1c-4.5 0-7.9 1.8-10.6 5.6-2.7-3.7-6.1-5.5-10.6-5.5C6 3.1 0 9.6 0 17.6c0 7.3 5.4 12 10.6 16.5.6.5 1.3 1.1 1.9 1.7l2.3 2c4.4 3.9 6.6 5.9 7.6 6.5.5.3 1.1.5 1.6.5s1.1-.2 1.6-.5c1-.6 2.8-2.2 7.8-6.8l2-1.8c.7-.6 1.3-1.2 2-1.7C42.7 29.6 48 25 48 17.6c0-8-6-14.5-13.4-14.5z"></path></svg>' : '<svg aria-label="좋아요" class="_8-yf5 " color="black" fill="black" height="24" role="img" viewBox="0 0 24 24" width="24"><path d="M16.792 3.904A4.989 4.989 0 0121.5 9.122c0 3.072-2.652 4.959-5.197 7.222-2.512 2.243-3.865 3.469-4.303 3.752-.477-.309-2.143-1.823-4.303-3.752C5.141 14.072 2.5 12.167 2.5 9.122a4.989 4.989 0 014.708-5.218 4.21 4.21 0 013.675 1.941c.84 1.175.98 1.763 1.12 1.763s.278-.588 1.11-1.766a4.17 4.17 0 013.679-1.938m0-2a6.04 6.04 0 00-4.797 2.127 6.052 6.052 0 00-4.787-2.127A6.985 6.985 0 00.5 9.122c0 3.61 2.55 5.827 5.015 7.97.283.246.569.494.853.747l1.027.918a44.998 44.998 0 003.518 3.018 2 2 0 002.174 0 45.263 45.263 0 003.626-3.115l.922-.824c.293-.26.59-.519.885-.774 2.334-2.025 4.98-4.32 4.98-7.94a6.985 6.985 0 00-6.708-7.218z"></path></svg>'
+
+    }
+
+    async function onSubmit(event) {
+      event.preventDefault()
+
+      const feedId = event.target.dataset.feedId
+      const url = `http://127.0.0.1:8000/${feedId}/like/`
+
+      const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
+      const config = {
+        headers: {'X-CSRFToken': csrftoken},
+      }
+
+      const response = await axios.post(url, {}, config)
+      const { liked, count } = response.data 
+      updateLikeStatus(feedId, liked, count)
+    }
+    
+    function attachEvent(form) {
+      form.addEventListener('submit', onSubmit)
+    }
+
+    const formList = document.querySelectorAll('.like-form')
+    formList.forEach(attachEvent)
+ 
+
+
+    {% comment %} 북마크 {% endcomment %}
+    function updateBookStatus(feedId, booked) {
+      const bookBtn = document.querySelector(`#book-${feedId}`)
+      bookBtn.innerHTML = booked ? '<svg aria-label="삭제" class="_8-yf5 " color="black" fill="black" height="24" role="img" viewBox="0 0 24 24" width="24"><path d="M20 22a.999.999 0 01-.687-.273L12 14.815l-7.313 6.912A1 1 0 013 21V3a1 1 0 011-1h16a1 1 0 011 1v18a1 1 0 01-1 1z"></path></svg>' : '<svg aria-label="저장" class="_8-yf5 " color="black" fill="black" height="24" role="img" viewBox="0 0 24 24" width="24"><polygon fill="none" points="20 21 12 13.44 4 21 4 3 20 3 20 21" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></polygon></svg>'
+      const bookBtn2 = document.querySelector(`#book2-${feedId}`)
+      bookBtn2.innerHTML = booked ? '<svg aria-label="삭제" class="_8-yf5 " color="black" fill="black" height="24" role="img" viewBox="0 0 24 24" width="24"><path d="M20 22a.999.999 0 01-.687-.273L12 14.815l-7.313 6.912A1 1 0 013 21V3a1 1 0 011-1h16a1 1 0 011 1v18a1 1 0 01-1 1z"></path></svg>' : '<svg aria-label="저장" class="_8-yf5 " color="black" fill="black" height="24" role="img" viewBox="0 0 24 24" width="24"><polygon fill="none" points="20 21 12 13.44 4 21 4 3 20 3 20 21" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></polygon></svg>'
+
+    }
+
+    async function onSubmit_B(event) {
+      event.preventDefault()
+
+      const feedId = event.target.dataset.feedId
+      const url = `http://127.0.0.1:8000/${feedId}/bookmark/`
+
+      const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
+      const config = {
+        headers: {'X-CSRFToken': csrftoken},
+      }
+
+      const response = await axios.post(url, {}, config)
+      const { booked } = response.data 
+
+      updateBookStatus(feedId, booked)
+    }
+    
+    function attachEvent_B(form) {
+      form.addEventListener('submit', onSubmit_B)
+    }
+
+    const formList_book = document.querySelectorAll('.book-form')
+    formList_book.forEach(attachEvent_B)
+
+
+
+    {% comment %} 좋아요2 {% endcomment %}
+    function updateLikeStatus2(feedId, liked, count) {
+      const likeBtn2 = document.querySelector(`#like2-${feedId}`)
+      likeBtn2.innerHTML = liked ? '<svg aria-label="좋아요 취소" class="_8-yf5 " color="#ed4956" fill="#ed4956" height="24" role="img" viewBox="0 0 48 48" width="24"><path d="M34.6 3.1c-4.5 0-7.9 1.8-10.6 5.6-2.7-3.7-6.1-5.5-10.6-5.5C6 3.1 0 9.6 0 17.6c0 7.3 5.4 12 10.6 16.5.6.5 1.3 1.1 1.9 1.7l2.3 2c4.4 3.9 6.6 5.9 7.6 6.5.5.3 1.1.5 1.6.5s1.1-.2 1.6-.5c1-.6 2.8-2.2 7.8-6.8l2-1.8c.7-.6 1.3-1.2 2-1.7C42.7 29.6 48 25 48 17.6c0-8-6-14.5-13.4-14.5z"></path></svg>' : '<svg aria-label="좋아요" class="_8-yf5 " color="black" fill="black" height="24" role="img" viewBox="0 0 24 24" width="24"><path d="M16.792 3.904A4.989 4.989 0 0121.5 9.122c0 3.072-2.652 4.959-5.197 7.222-2.512 2.243-3.865 3.469-4.303 3.752-.477-.309-2.143-1.823-4.303-3.752C5.141 14.072 2.5 12.167 2.5 9.122a4.989 4.989 0 014.708-5.218 4.21 4.21 0 013.675 1.941c.84 1.175.98 1.763 1.12 1.763s.278-.588 1.11-1.766a4.17 4.17 0 013.679-1.938m0-2a6.04 6.04 0 00-4.797 2.127 6.052 6.052 0 00-4.787-2.127A6.985 6.985 0 00.5 9.122c0 3.61 2.55 5.827 5.015 7.97.283.246.569.494.853.747l1.027.918a44.998 44.998 0 003.518 3.018 2 2 0 002.174 0 45.263 45.263 0 003.626-3.115l.922-.824c.293-.26.59-.519.885-.774 2.334-2.025 4.98-4.32 4.98-7.94a6.985 6.985 0 00-6.708-7.218z"></path></svg>'
+      const likeBtn = document.querySelector(`#like-${feedId}`)
+      likeBtn.innerHTML = liked ? '<svg aria-label="좋아요 취소" class="_8-yf5 " color="#ed4956" fill="#ed4956" height="24" role="img" viewBox="0 0 48 48" width="24"><path d="M34.6 3.1c-4.5 0-7.9 1.8-10.6 5.6-2.7-3.7-6.1-5.5-10.6-5.5C6 3.1 0 9.6 0 17.6c0 7.3 5.4 12 10.6 16.5.6.5 1.3 1.1 1.9 1.7l2.3 2c4.4 3.9 6.6 5.9 7.6 6.5.5.3 1.1.5 1.6.5s1.1-.2 1.6-.5c1-.6 2.8-2.2 7.8-6.8l2-1.8c.7-.6 1.3-1.2 2-1.7C42.7 29.6 48 25 48 17.6c0-8-6-14.5-13.4-14.5z"></path></svg>' : '<svg aria-label="좋아요" class="_8-yf5 " color="black" fill="black" height="24" role="img" viewBox="0 0 24 24" width="24"><path d="M16.792 3.904A4.989 4.989 0 0121.5 9.122c0 3.072-2.652 4.959-5.197 7.222-2.512 2.243-3.865 3.469-4.303 3.752-.477-.309-2.143-1.823-4.303-3.752C5.141 14.072 2.5 12.167 2.5 9.122a4.989 4.989 0 014.708-5.218 4.21 4.21 0 013.675 1.941c.84 1.175.98 1.763 1.12 1.763s.278-.588 1.11-1.766a4.17 4.17 0 013.679-1.938m0-2a6.04 6.04 0 00-4.797 2.127 6.052 6.052 0 00-4.787-2.127A6.985 6.985 0 00.5 9.122c0 3.61 2.55 5.827 5.015 7.97.283.246.569.494.853.747l1.027.918a44.998 44.998 0 003.518 3.018 2 2 0 002.174 0 45.263 45.263 0 003.626-3.115l.922-.824c.293-.26.59-.519.885-.774 2.334-2.025 4.98-4.32 4.98-7.94a6.985 6.985 0 00-6.708-7.218z"></path></svg>'
+
+    }
+
+    async function onSubmit2(event) {
+      event.preventDefault()
+
+      const feedId = event.target.dataset.feedId
+      const url = `http://127.0.0.1:8000/${feedId}/like/`
+
+      const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
+      const config = {
+        headers: {'X-CSRFToken': csrftoken},
+      }
+
+      const response = await axios.post(url, {}, config)
+      const { liked, count } = response.data 
+      updateLikeStatus2(feedId, liked, count)
+    }
+    
+    function attachEvent2(form) {
+      form.addEventListener('submit', onSubmit2)
+    }
+
+    const formList2 = document.querySelectorAll('.like-form2')
+    formList2.forEach(attachEvent2)
+ 
+
+
+    {% comment %} 북마크2 {% endcomment %}
+    function updateBookStatus2(feedId, booked) {
+      const bookBtn2 = document.querySelector(`#book2-${feedId}`)
+      bookBtn2.innerHTML = booked ? '<svg aria-label="삭제" class="_8-yf5 " color="black" fill="black" height="24" role="img" viewBox="0 0 24 24" width="24"><path d="M20 22a.999.999 0 01-.687-.273L12 14.815l-7.313 6.912A1 1 0 013 21V3a1 1 0 011-1h16a1 1 0 011 1v18a1 1 0 01-1 1z"></path></svg>' : '<svg aria-label="저장" class="_8-yf5 " color="black" fill="black" height="24" role="img" viewBox="0 0 24 24" width="24"><polygon fill="none" points="20 21 12 13.44 4 21 4 3 20 3 20 21" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></polygon></svg>'
+      const bookBtn = document.querySelector(`#book-${feedId}`)
+      bookBtn.innerHTML = booked ? '<svg aria-label="삭제" class="_8-yf5 " color="black" fill="black" height="24" role="img" viewBox="0 0 24 24" width="24"><path d="M20 22a.999.999 0 01-.687-.273L12 14.815l-7.313 6.912A1 1 0 013 21V3a1 1 0 011-1h16a1 1 0 011 1v18a1 1 0 01-1 1z"></path></svg>' : '<svg aria-label="저장" class="_8-yf5 " color="black" fill="black" height="24" role="img" viewBox="0 0 24 24" width="24"><polygon fill="none" points="20 21 12 13.44 4 21 4 3 20 3 20 21" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></polygon></svg>'
+
+    }
+
+    async function onSubmit_B2(event) {
+      event.preventDefault()
+
+      const feedId = event.target.dataset.feedId
+      const url = `http://127.0.0.1:8000/${feedId}/bookmark/`
+
+      const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
+      const config = {
+        headers: {'X-CSRFToken': csrftoken},
+      }
+
+      const response = await axios.post(url, {}, config)
+      const { booked } = response.data 
+
+      updateBookStatus2(feedId, booked)
+    }
+    
+    function attachEvent_B2(form) {
+      form.addEventListener('submit', onSubmit_B2)
+    }
+
+    const formList_book2 = document.querySelectorAll('.book-form2')
+    formList_book2.forEach(attachEvent_B2)
+
+
+
+    {% comment %} 댓글등록 {% endcomment %}
+    function updateCommentStatus(feedId, username, content, created_at) {
+      const commentList = document.querySelector(`#comment-list-${feedId}`)
+      console.log(commentList)
+      commentList.innerHTML += `<div class='d-flex align-items-start'><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
+        <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
+        <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"/>
+      </svg><div class='d-flex align-items-start'>
+        <div style='padding-left:14px;'>
+          <a class='name fw-bold m-0' href="">${username}</a>
+          <span style=''>${content}</span>
+          <div>
+            <p style='font-size:12px; margin-top:10px'>${created_at}</p>
+          </div>
+        </div>
+      </div></div>`
+    }
+
+    async function onSubmit_comment(event) {
+      event.preventDefault()
+      console.log(event)
+
+      const feedId = event.target.dataset.feedId
+      const url = `http://127.0.0.1:8000/${feedId}/comment/create/`
+
+      let content1 = document.querySelector(`#id_content_${feedId}`).value
+      console.log(content1)
+
+      let data = new FormData()
+
+      data.append('content',content1)
+      data.append("csrfmiddlewaretoken", '{{csrf_token}}')
+
+      const response = await axios.post(url, data)
+      const { username, content, created_at } = response.data 
+      console.log(response)
+
+      updateCommentStatus(feedId, username, content, created_at)
+    }
+    
+    function attachEvent_comment(form) {
+      form.addEventListener('submit', onSubmit_comment)
+    }
+
+    const formList_comment = document.querySelectorAll('.comment-form')
+    formList_comment.forEach(attachEvent_comment)
+  </script>
+{% endblock script %}
