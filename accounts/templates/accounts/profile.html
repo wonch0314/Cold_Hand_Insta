@@ -19,13 +19,19 @@
   .feed-image {
     width: 100%;
   }
+
+  .profile-area {
+    max-width: 844px;
+  }
+
 {% endblock style %}
 
 
 {% block content %}
 
-<div class='row my-5'>
-  <div class='profile-image col-4 flex justify-content-center'>
+<div class='row m-0 profile-area d-flex justify-content-between' style="min-width: 776px;">
+  
+  <div class='col-5 profile-image my-5'>
     <div class='rectangle mx-auto rounded-circle d-flex justify-content-center'>
       {% if user.image_url %}
         <img class='get-center' src="{{ user.image_url.url }}" alt="">
@@ -35,13 +41,13 @@
     </div>
   </div>
 
-  <div class='my-info col-8'>
+  <div class='col-7 my-info profile-body d-flex flex-column justify-content-center'>
     <div class='d-flex align-content-center'>
       <p class='fs-2 m-0'>{{ user.username }}</p>
       <div class='d-flex align-content-center'>
         {% if user == request.user %}
           <form action="{% url 'accounts:update' user.username %}" class='my-auto'>
-            <button class='fs-5 mx-4'>Profile 수정</button>
+            <button class='fs-6 mx-4 bg-white rounded-3'>Profile 수정</button>
           </form>
         {% endif %}
       </div>
@@ -55,17 +61,7 @@
   </div>
 </div>
 
-<div class='row my-4'>
-<hr>
-{% for feed in feeds %}
-  <div class='col-4 p-3'>
-    <a href="#" class=''>
-      <div style='position:relative; overflow: hidden; padding-bottom: 100%;'>
-        <img class='img img-responsive img-fluid' src="{{feed.image_url.url}}" style='position:absolute'>
-      </div>
-    </a>
-  </div>
-{% endfor %}
+
 
 <div class='row my-4'>
 <hr>
