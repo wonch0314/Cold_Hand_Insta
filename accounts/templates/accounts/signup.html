@@ -1,16 +1,21 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <form action='' method='POST' enctype='multipart/form-data'>
-    {% csrf_token %}
-    {{form.as_p}}
-    <div class='w-50'>
-      <p>{{ form.username }}</p>
-      <p>{{ form.password1 }}</p>
-      <p>{{ form.password2 }}</p>
-      <p>{{ form.image_url }}</p>
-      
-      <button class='w-100 btn btn-outline-primary'>회원가입</button>
-    </div>
-  </form>
+<div class='cover-container d-flex w-100 h-100 p-3 mx-auto flex-column'>
+  <div class='d-flex justify-content-center align-items-center mt-5'>
+    <form method='POST' enctype='multipart/form-data' class='d-flex align--center'>
+      {% csrf_token %}
+      {% comment %} {{form.as_p}} {% endcomment %}
+      <div class='text-center border p-4 m-auto'>
+        <img class='mb-5' src="https://www.instagram.com/static/images/web/logged_out_wordmark.png/7a252de00b20.png">
+        <p>친구들의 사진을 보려면 가입하세요.</p>
+        <p>{{ form.username }}</p>
+        <p>{{ form.password1 }}</p>
+        <p>{{ form.password2 }}</p>
+        
+        <button class='w-100 btn btn-outline-primary'>회원가입</button>
+      </div>
+    </form>
+  </div>
+</div>
 {% endblock content %}

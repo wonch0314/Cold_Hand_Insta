@@ -2,21 +2,22 @@
 
 
 {% block content %}
-
-<div class='d-flex justify-content-center align-items-center mt-5'>
-  <div class='image-block mx-4'>
-    <img src="https://www.instagram.com/static/images/homepage/screenshots/screenshot1.png/fdfe239b7c9f.png" alt="">
-  </div>
-
-  <div class='text-center login-form mx-4'>
-    <form action="" method='POST'>
-      {% csrf_token %}
-      <img src="https://www.instagram.com/static/images/web/logged_out_wordmark.png/7a252de00b20.png" alt="" class='mb-4'>
-      <p>{{ form.username }}</p>
-      <p>{{ form.password }}</p>
-      
-      <button class='w-100 btn btn-outline-primary'>로그인</button>
-    </form>
+<div class='cover-container d-flex w-100 h-100 p-3 mx-auto flex-column'>
+  <div class='d-flex justify-content-center align-items-center mt-5'>
+    <div class='image-block mx-4'>
+      <img src="https://www.instagram.com/static/images/homepage/screenshots/screenshot1.png/fdfe239b7c9f.png" alt="">
+    </div>
+  
+    <div class='text-center login-form mx-4'>
+      <form action="" method='POST'>
+        {% csrf_token %}
+        <img src="https://www.instagram.com/static/images/web/logged_out_wordmark.png/7a252de00b20.png" alt="" class='mb-4'>
+        <p>{{ form.username }}</p>
+        <p>{{ form.password }}</p>
+        
+        <button class='w-100 btn btn-outline-primary'>로그인</button>
+      </form>
+    </div>
   </div>
 </div>
 

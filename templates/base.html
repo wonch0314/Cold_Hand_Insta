@@ -41,8 +41,11 @@
     }
 
     body {
-      min-width: 576px; 
+      min-width: 576px;
+      background-color: #F7F7F7;
     }
+
+    
 
     @media screen and (max-width:770px){
       .search {
@@ -64,14 +67,14 @@
     body{
 
       -ms-overflow-style: none; 
-     
-     } 
-     
-     ::-webkit-scrollbar { 
-     
-     display: none; 
-     
-     }
+    
+    } 
+    
+    ::-webkit-scrollbar { 
+    
+    display: none; 
+    
+    }
     {% block style %}
     {% endblock style %}
   </style>
@@ -132,7 +135,7 @@
       </div>
     </nav>
 
-  <div class="container mt-5 ">
+  <div class="container mt-5" style='max-width: 975px;'>
     <div class='mb-4'><hr></div>
     {% block content %}
     
