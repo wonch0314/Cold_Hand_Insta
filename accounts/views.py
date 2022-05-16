@@ -1,6 +1,7 @@
 from multiprocessing import AuthenticationError
+from django.contrib import messages
 from django.shortcuts import get_object_or_404, redirect, render
-from .forms import UserForm, CustomUserChangeForm
+from .forms import CustomPasswordChangeForm, UserForm, CustomUserChangeForm, PasswordChangeForm
 from django.contrib.auth.forms import (
     AuthenticationForm,
 )
@@ -99,4 +100,19 @@ def update(request, username):
             }
             return render(request, 'accounts/update.html', context)
     return redirect('accounts:profile', username)
+
+def password(request, username):
+    user = get_object_or_404(User, username=username)
     
+    if request.method == 'POST':
+        form = CustomPasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)  # Important!
+            messages.success(request, 'Your password was successfully updated!')
+            return redirect('accounts:profile', user.username)
+        else:
+            messages.error(request, 'Please correct the error below.')
+    else:
+        form = PasswordChangeForm(request.user)
+    return render(request, 'accounts/password.html', {'form': form})

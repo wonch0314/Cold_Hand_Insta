@@ -10,4 +10,5 @@ urlpatterns = [
     path('profile/<str:username>/',views.profile,name='profile'),
     path('<str:username>/follows/',views.follows,name='follows'),
     path('profile/<str:username>/update/',views.update,name='update'),
+    path('profile/<str:username>/update/password/',views.password,name='password'),
 ]
