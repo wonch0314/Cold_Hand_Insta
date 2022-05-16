@@ -134,3 +134,29 @@ def tag(request, username):
         'feeds': feeds,
     }
     return render(request, 'accounts/profile_tag.html', context)
+
+
+
+def new_update(request, username):
+    you  = get_object_or_404(get_user_model(),username=username)
+    me = request.user
+    if you.username == me.username:
+        if request.method == 'GET':
+            form = CustomUserChangeForm(instance = you)
+            pw_form = CustomPasswordChangeForm(request.user)
+            context = {
+                'form': form,
+                'pw_form': pw_form,
+            }
+            return render(request, 'accounts/new_update.html', context)
+        elif request.method == 'POST':
+            form = CustomUserChangeForm(request.POST, request.FILES, instance=you)
+            if form.is_valid():
+                form.save()
+                return redirect('accounts:profile', you.username)
+            context = {
+                'form': form
+            }
+            return render(request, 'accounts/update.html', context)
+    return redirect('accounts:profile', username)
+

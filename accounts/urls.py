@@ -14,4 +14,6 @@ urlpatterns = [
     path('profile/<str:username>/bk_feeds/',views.bookmark ,name='bk_feeds'),
     path('profile/<str:username>/tag_feeds/',views.tag ,name='tag_feeds'),
     
+    path('profile/<str:username>/new_update/',views.new_update ,name='new_update'),
+    
 ]
