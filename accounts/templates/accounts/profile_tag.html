@@ -80,7 +80,7 @@
       <div class='d-flex align-content-center'>
         {% if user == request.user %}
           <form action="{% url 'accounts:update' user.username %}" class='my-auto'>
-            <button class='fs-6 mx-4 bg-white rounded-3'>Profile 수정</button>
+            <button class='fs-6 mx-4 rounded-3 border' style='background-color: #F7F7F7'>프로필 편집</button>
           </form>
         {% endif %}
       </div>
@@ -105,7 +105,7 @@
 
 
 {% for feed in feeds %}
-  <div class='col-4 p-3 border'>
+  <div class='col-4 p-3 d-flex flex-wrap align-items-center'>
     <a href='#' style='color:gray; text-decoration:none;' data-bs-toggle="modal" data-bs-target="#exampleModal{{feed.pk}}">
       <div>
         <img class='feed-image' src="{{feed.image_url.url}}">

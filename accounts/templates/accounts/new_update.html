@@ -1,0 +1,186 @@
+{% extends 'base.html' %}
+
+{% block style %}
+.list-item:hover {
+  background: lightgrey
+}
+
+.list-item {
+  padding: 10px 20px;
+}
+
+li > * {
+  text-decoration: none;
+  color: black;
+}
+
+.left-area {
+  width: 200px;
+  padding: 10px;
+}
+
+.right-area {
+  width: 500px;
+  padding: 10px;
+  padding-left: 20px;
+}
+
+.attatch-right {
+  margin-left: auto;
+}
+
+.selected {
+  border-left: solid 3px black;
+}
+{% endblock style %}
+
+{% block content %}
+<div class='d-flex bg-white' style='min-width:840px; margin-top: 30px;'>
+
+  <!--sidebar-->
+  <div class='border' style="width: 240px">
+    <ul class='list-unstyled'>
+      <li>
+        <a id='pf-btn'class='list-item d-block selected'>프로필 편집</a>
+      </li>
+      <li>
+        <a id='pw-btn' class='list-item d-block'>비밀번호 편집</a>
+      </li>
+    </ul>
+  </div>
+  
+  <!--update 영역-->
+  <div class='border w-100' style='min-width:600px;'>
+    <div id='change-username'>
+      <form method='POST' enctype='multipart/form-data'>
+        {% csrf_token %}
+  
+        <div class='d-flex image-and-name mt-5 mb-5'>
+          <!--현재 이미지 사진 보여주기-->
+          <div class='left-area'>
+            <div class='rounded-circle bg-white d-flex align-item-center attatch-right' style="width: 80px; height: 80px; overflow: hidden;">
+              {% if user.image_url %}
+                <img class='w-100' src="{{ user.image_url.url }}" alt="">
+              {% else %}
+                <img class='w-100' src="https://profileimg.plaync.com/account_profile_images/8A3BFAF2-D15F-E011-9A06-E61F135E992F?imageSize=large">
+              {% endif %}
+            </div>
+          </div>
+          <!--이미지 사진 바꾸는 곳-->
+          <div class='right-area'>
+            <h3>{{ user.username }}</h3>
+            <input type="file" name="image_url" accept='image/*' id='id_image_url'>
+          </div>
+        </div>
+  
+        <!--Username 바꾸는 곳-->
+        <div class='d-flex username-form'>
+          <div class='left-area text-end'>
+            <span style="font-size: 21px;">사용자 이름</span>
+          </div>
+  
+          <div class='right-area'>
+            <p>{{ form.username }}</p>
+          </div>
+        </div>
+  
+        <!--form 제출 버튼-->
+        <div class='mb-5' style="padding-left: 220px;">
+          <button class='btn btn-outline-primary w-25 m-0'>수정 완료</button>
+        </div>
+  
+      </form>
+    </div>
+
+    <div id='change-password' class='d-none'>
+      <div class='d-flex image-and-name mb-3'>
+        <!--현재 이미지 사진 보여주기-->
+        <div class='left-area'>
+          <div class='rounded-circle bg-white d-flex align-item-center attatch-right' style="width: 80px; height: 80px; overflow: hidden;">
+            {% if user.image_url %}
+              <img class='w-100' src="{{ user.image_url.url }}" alt="">
+            {% else %}
+              <img class='w-100' src="https://profileimg.plaync.com/account_profile_images/8A3BFAF2-D15F-E011-9A06-E61F135E992F?imageSize=large">
+            {% endif %}
+          </div>
+        </div>
+        <!--이미지 사진 바꾸는 곳-->
+        <div class='right-area d-flex align-items-center'>
+          <h3>{{ user.username }}</h3>
+        </div>
+      </div>
+      <form method='POST' enctype='multipart/form-data'>
+        {% csrf_token %}
+        
+        <!--Password 바꾸는 곳-->
+        <div class='d-flex password-form'>
+          <div class='left-area text-end'>
+            <span style="font-size: 21px;">이전 비밀번호</span>
+          </div>
+  
+          <div class='right-area'>
+            <p>{{ pw_form.old_password }}</p>
+          </div>
+        </div>
+  
+        <div class='d-flex password-form'>
+          <div class='left-area text-end'>
+            <span style="font-size: 21px;">새 비밀번호</span>
+          </div>
+  
+          <div class='right-area'>
+            <p>{{ pw_form.new_password1 }}</p>
+          </div>
+        </div>
+  
+  
+        <div class='d-flex password-form'>
+          <div class='left-area text-end'>
+            <span style="font-size: 21px;">새 비밀번호 확인</span>
+          </div>
+  
+          <div class='right-area'>
+            <p>{{ pw_form.new_password2 }}</p>
+          </div>
+        </div>
+  
+  
+        <!--form 제출 버튼-->
+        <div class='mb-5' style="padding-left: 220px;">
+          <button class='btn btn-outline-primary m-0'>비밀번호 변경</button>
+        </div>
+  
+      </form>
+    </div>
+    
+  </div>
+</div>
+
+{% endblock content %}
+
+{% block script %}
+<script>
+const pfBtn = document.querySelector('#pf-btn')
+const pwBtn = document.querySelector('#pw-btn')
+const nameForm = document.querySelector('#change-username')
+const pwForm = document.querySelector('#change-password')
+
+pfBtn.addEventListener('click', () => {
+  nameForm.classList = ''
+  pwForm.classList = ''
+  pwForm.classList.add('d-none')
+  pwBtn.classList.remove('selected')
+  pfBtn.classList.add('selected')
+})
+
+
+pwBtn.addEventListener('click', () => {
+  nameForm.classList = ''
+  pwForm.classList = ''
+  nameForm.classList.add('d-none')
+  pfBtn.classList.remove('selected')
+  pwBtn.classList.add('selected')
+})
+
+</script>
+{% endblock script %}
