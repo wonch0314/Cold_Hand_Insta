@@ -116,3 +116,21 @@ def password(request, username):
     else:
         form = PasswordChangeForm(request.user)
     return render(request, 'accounts/password.html', {'form': form})
+
+def bookmark(request, username):
+    user = get_object_or_404(User, username=username)
+    feeds = user.bk_feed.all()
+    context = {
+        'user': user,
+        'feeds': feeds,
+    }
+    return render(request, 'accounts/profile_bookmark.html', context)
+
+def tag(request, username):
+    user = get_object_or_404(User, username=username)
+    feeds = user.tag_feeds.all()
+    context = {
+        'user': user,
+        'feeds': feeds,
+    }
+    return render(request, 'accounts/profile_tag.html', context)
