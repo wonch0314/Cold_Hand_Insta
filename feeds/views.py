@@ -194,3 +194,19 @@ def bookmark(request, feed_pk):
 
         return JsonResponse(response)
     return JsonResponse(response)
+
+def hashtag_search(request,hash):
+    hashtag = get_object_or_404(Hashtag,content=hash)
+    feeds = hashtag.hashtag_feeds.all()
+    context = {
+        'feeds':feeds,
+    }
+    return render(request,'feeds/hashtag_search.html',context)
+
+def usertag_search(request,user):
+    user = get_object_or_404(User,username=user)
+    feeds = user.tag_feeds.all()
+    context = {
+        'feeds':feeds,
+    }
+    return render(request,'feeds/usertag_search.html',context)

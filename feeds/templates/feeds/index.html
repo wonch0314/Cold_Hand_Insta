@@ -27,6 +27,10 @@
 input:focus {
   outline:none;
 }
+.feed-content > a {
+  text-decoration:none !important;
+  color: rgb(0,55,107);
+}
 {% endblock  %}
 
 
@@ -93,7 +97,7 @@ input:focus {
         <p class='m-0 fw-bold'>좋아요 <span id="like-count-{{ feed.pk }}">{{feed.like_users.all|length}}</span>개</p>
       </div>
       <div style='font-size:14px; padding:0px 16px;'>
-        <p class="m-0" style=''><a href='{% url 'accounts:profile' feed.user.username %}' class='fw-bold text-decoration-none text-black' >{{feed.user.username}}</a> {{ feed.content }}</p>
+        <p class="m-0" style=''><a href='{% url 'accounts:profile' feed.user.username %}' class='fw-bold text-decoration-none text-black' >{{feed.user.username}}</a> <span class='feed-content'>{{ feed.content }}</span></p>
         <!-- Button trigger modal -->
         <a href='#' style='color:gray; text-decoration:none;' data-bs-toggle="modal" data-bs-target="#exampleModal{{feed.pk}}">
           {% if feed.feed_comments.all|length %}
@@ -159,7 +163,7 @@ input:focus {
                         {% endif %}
                         <div style='padding-left:14px;'>
                           <a class='name fw-bold m-0' href="{% url 'accounts:profile' feed.user.username %}">{{feed.user.username}}</a>
-                          <span style=''>{{feed.content}}</span>
+                          <span class='feed-content'>{{feed.content}}</span>
                           <div>
                             <p style='font-size:12px; margin-top:10px'>{{feed.created_at}}</p>
                           </div>
@@ -168,8 +172,8 @@ input:focus {
                       {% if feed.feed_comments.all %}
                       {% for comment in feed.feed_comments.all %}
                       <div class='d-flex align-items-start'>
-                        {% if feed.user.image_url %}
-                        <img src="{{feed.user.image_url.url}}" alt="" width='32' height='32' style='border-radius:50%;'>
+                        {% if comment.user.image_url %}
+                        <img src="{{comment.user.image_url.url}}" alt="" width='32' height='32' style='border-radius:50%;'>
                         {% else %}
                         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
                           <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
@@ -177,7 +181,7 @@ input:focus {
                         </svg> 
                         {% endif %}
                         <div style='padding-left:14px;'>
-                          <a class='name fw-bold m-0' href="{% url 'accounts:profile' feed.user.username %}">{{comment.user.username}}</a>
+                          <a class='name fw-bold m-0' href="{% url 'accounts:profile' comment.user.username %}">{{comment.user.username}}</a>
                           <span style=''>{{comment.content}}</span>
                           <div>
                             <p style='font-size:12px; margin-top:10px'>{{comment.created_at}}</p>
@@ -440,5 +444,22 @@ input:focus {
 
     const formList_comment = document.querySelectorAll('.comment-form')
     formList_comment.forEach(attachEvent_comment)
+
+
+    
+    {% comment %} 해쉬태그, 인물태그 링크화 {% endcomment %}
+    function uHashToAnchor(){
+      const contentss = document.querySelectorAll('.feed-content');
+      for (i = 0; i<contentss.length; i++){
+        // 해쉬태그로 된 문자열을 찾고, 교체하는 문자열의 $1 자리에 해쉬태그가 들어감
+        contentss[i].innerHTML=contentss[i].innerText.replace(/#[^#\s]+|@[^@\s]+/gm, function(tag){
+          console.log(tag)
+          return (tag.indexOf('#')== 0) ? '<a href="hashtag/search/'+tag.slice(1,tag.length)+'">'+tag+'</a>':'<a href="usertag/search/'+tag.slice(1,tag.length)+'">'+tag+'</a>'
+      });
+      }
+    };
+
+    uHashToAnchor();
+
   </script>
 {% endblock script %}
