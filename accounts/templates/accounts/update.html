@@ -29,16 +29,19 @@ li > * {
   margin-left: auto;
 }
 
+.selected {
+  border-left: solid 3px black;
+}
 {% endblock style %}
 
 {% block content %}
-<div class='d-flex' style='min-width:840px;'>
+<div class='d-flex bg-white' style='min-width:840px; margin-top: 30px;'>
 
   <!--sidebar-->
   <div class='border' style="width: 240px">
-    <ul class='list-unstyled mt-3'>
+    <ul class='list-unstyled'>
       <li>
-        <a href="{% url 'accounts:update' user.username %}" class='list-item d-block'>프로필 편집</a>
+        <a href="{% url 'accounts:update' user.username %}" class='list-item d-block selected'>프로필 편집</a>
       </li>
       <li>
         <a href="{% url 'accounts:password' user.username %}" class='list-item d-block'>비밀번호 편집</a>
