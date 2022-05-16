@@ -196,12 +196,17 @@ def bookmark(request, feed_pk):
     return JsonResponse(response)
 
 def hashtag_search(request,hash):
-    hashtag = get_object_or_404(Hashtag,content=hash)
-    feeds = hashtag.hashtag_feeds.all()
-    context = {
-        'feeds':feeds,
-    }
-    return render(request,'feeds/hashtag_search.html',context)
+    try:
+        hashtag = Hashtag.objects.get(content=hash)
+    
+        feeds = hashtag.hashtag_feeds.all()
+        context = {
+            'feeds':feeds,
+        }
+        return render(request,'feeds/hashtag_search.html',context)
+        
+    except:
+        return redirect('feeds:index')
 
 def usertag_search(request,user):
     user = get_object_or_404(User,username=user)
@@ -210,3 +215,21 @@ def usertag_search(request,user):
         'feeds':feeds,
     }
     return render(request,'feeds/usertag_search.html',context)
+
+def hashtag_exist(request,hash):
+        # CODE HERE
+    
+    hashs = Hashtag.objects.all()
+    
+
+    # 응답 객체 초기화
+    response = {
+        'exist': False,
+    }
+
+    if hashs.filter(content=hash).exists():
+        response['exist'] = True
+    else:
+        pass
+
+    return JsonResponse(response)
