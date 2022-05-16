@@ -453,7 +453,6 @@ input:focus {
       for (i = 0; i<contentss.length; i++){
         // 해쉬태그로 된 문자열을 찾고, 교체하는 문자열의 $1 자리에 해쉬태그가 들어감
         contentss[i].innerHTML=contentss[i].innerText.replace(/#[^#\s]+|@[^@\s]+/gm, function(tag){
-          console.log(tag)
           return (tag.indexOf('#')== 0) ? '<a href="hashtag/search/'+tag.slice(1,tag.length)+'">'+tag+'</a>':'<a href="usertag/search/'+tag.slice(1,tag.length)+'">'+tag+'</a>'
       });
       }

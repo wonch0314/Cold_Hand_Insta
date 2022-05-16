@@ -86,7 +86,7 @@
   
         <div class="d-flex align-items-center row justify-content-between">
           <form class="d-flex search align-items-center col-md-auto">
-            <input class="form-control me-2 bg-light border-0" type="search" placeholder="검색" aria-label="Search">
+            <input class="form-control me-2 bg-light border-0" type="text" placeholder="검색" aria-label="Search" id='search'>
           </form>
         </div>
         <div class='d-flex align-items-center'>
@@ -145,6 +145,28 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
+  <script>
+    const searchForm = document.querySelector('.search')
+    
+    async function searchSubmit(event) {
+      event.preventDefault()
+      
+      const keyword = document.querySelector('#search')
+      
+      const url = '/hashtag/search/' + keyword.value
+      const url2 = '/hashtag/exist/' + keyword.value
+      const response = await axios.get(url2)
+      console.log(response.data)
+      if (response.data['exist']) {
+        location.href = url
+      } else {
+        alert('입력하신 해쉬태그는 작성된 적이 없습니다..👎')
+        keyword.value = ''
+      }
+
+    }
+    searchForm.addEventListener('submit',searchSubmit)
+  </script>
   {% block script %}
   {% endblock script %}
 </body>

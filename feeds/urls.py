@@ -18,8 +18,9 @@ urlpatterns = [
     path('<int:feed_pk>/comment/<int:comment_pk>/update/', views.comment_update, name='comment_update'),
     path('<int:feed_pk>/comment/<int:comment_pk>/delete/', views.comment_delete, name='comment_delete'),
 
-    ## HashTag - search
+    ## HashTag - search,, exist
     path('hashtag/search/<str:hash>/',views.hashtag_search, name='hashtah_search'),
+    path('hashtag/exist/<str:hash>/',views.hashtag_exist, name='hashtah_exist'),
 
     ## UserTag - search
     path('usertag/search/<str:user>/',views.usertag_search, name='usertag_search'),
