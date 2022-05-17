@@ -86,14 +86,20 @@ def update(request, feed_pk):
         return render(request, 'feeds/update.html', context)
     return redirect('accounts:login')
 
-
+@require_POST
 def delete(request, feed_pk):
+    
     if request.user.is_authenticated:
-        if request.method == 'POST':
-            feed = get_object_or_404(Feed, pk=feed_pk)
-            feed.delete()
-            return redirect('feeds:index')
-    return redirect('accounts:login')
+        feed = get_object_or_404(Feed, pk=feed_pk)
+
+        # 응답 객체 초기화
+        response = {
+            'username': feed.user.username,
+        }
+
+        feed.delete()
+
+        return JsonResponse(response)
 
 @require_POST
 @login_required
@@ -139,9 +145,7 @@ def comment_create(request, feed_pk):
             response['username'] = comment.user.username
             response['content'] = comment.content
             response['created_at'] = comment.created_at
-            print(response)
             return JsonResponse(response)
-    print('오류')
     JsonResponse(response)
 
 def comment_update(request, feed_pk, comment_pk):

@@ -168,7 +168,7 @@
                     {% endif %}
                     <div style='padding-left:14px;'>
                       <a class='name fw-bold m-0' href="{% url 'accounts:profile' feed.user.username %}">{{feed.user.username}}</a>
-                      <span style=''>{{feed.content}}</span>
+                      <span class='feed-content'>{{feed.content}}</span>
                       <div>
                         <p style='font-size:12px; margin-top:10px'>{{feed.created_at}}</p>
                       </div>
@@ -435,5 +435,44 @@
     const formList_comment = document.querySelectorAll('.comment-form')
     formList_comment.forEach(attachEvent_comment)
 
+    {% comment %} 해쉬태그, 인물태그 링크화 {% endcomment %}
+    function uHashToAnchor(){
+      const contentss = document.querySelectorAll('.feed-content');
+      for (i = 0; i<contentss.length; i++){
+        // 해쉬태그로 된 문자열을 찾고, 교체하는 문자열의 $1 자리에 해쉬태그가 들어감
+        contentss[i].innerHTML=contentss[i].innerText.replace(/#[^#\s]+|@[^@\s]+/gm, function(tag){
+          return (tag.indexOf('#')== 0) ? '<a href="/hashtag/search/'+tag.slice(1,tag.length)+'">'+tag+'</a>':'<a class="usertag" href="#">'+tag+'</a>'
+          {% comment %} href="/accounts/profile/'+tag.slice(1,tag.length)+'" {% endcomment %}
+      });
+      }
+    };
+
+    uHashToAnchor();
+
+    
+    {% comment %} 인물태그 user 존재 유무 따른 차이 {% endcomment %}
+    async function usertagclick(event) {
+      event.preventDefault()
+      const usertag= event.target.innerText
+      const username = usertag.slice(1,usertag.length)
+
+      const url = '/accounts/profile/' + username
+      const url2 = '/usertag/exist/' + username
+      const response = await axios.get(url2)
+      console.log(response.data)
+      if (response.data['exist']) {
+        location.href = url
+      } else {
+        alert('그 인물은 존재하지 않습니다..👎')
+      }
+      
+    }
+    function attachEvent_usertag(Anchor) {
+      Anchor.addEventListener('click',usertagclick)
+    }
+    
+    
+    const usertagAnchor = document.querySelectorAll('.usertag')
+    usertagAnchor.forEach(attachEvent_usertag)
   </script>
 {% endblock script %}

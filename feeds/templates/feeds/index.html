@@ -165,9 +165,19 @@ input:focus {
                         {% endif %}
                       </div>
                     </div>
-                    <button type="button" class="btn" data-bs-dismiss="modal" aria-label="Close"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
-                      <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
-                    </svg></button>
+                    {% comment %} 피드 옵션 드롭다운 {% endcomment %}
+                    <div class="dropdown" style='padding-right:8px;'>
+                      <button class="btn" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false" style='padding:0 8px;'>
+                        <svg aria-label="옵션 더 보기" class="_8-yf5 " color="#262626" fill="#262626" height="24" role="img" viewBox="0 0 24 24" width="24"><circle cx="12" cy="12" r="1.5"></circle><circle cx="6" cy="12" r="1.5"></circle><circle cx="18" cy="12" r="1.5"></circle></svg>
+                      </button>
+                      <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                        {% if request.user == feed.user %}
+                        <li><a class="dropdown-item feed-delete2" data-feed-id="{{ feed.pk }}">피드 삭제</a></li>
+                        {% endif %}
+                        
+                        <li><a class="dropdown-item" href="#">취소</a></li>
+                      </ul>
+                    </div>
                   </div>
                   {% comment %} 본문, 댓글 {% endcomment %}
                   <div class="modal-body p-0 d-flex border-top" style='position:absolute; z-index:0; height:calc(100% - 172px); width:404px'>
@@ -495,7 +505,7 @@ input:focus {
       if (response.data['exist']) {
         location.href = url
       } else {
-        alert('그 인물은 존재하지 않습니다..👎')
+        swal('그 인물은 존재하지 않습니다..👎')
       }
       
     }
@@ -533,5 +543,31 @@ input:focus {
     
     const deleteLink = document.querySelectorAll('.feed-delete')
     deleteLink.forEach(deleteEvent)
+
+    {% comment %} 피드 삭제 2 {% endcomment %}
+    async function deleteClick2(event) {
+      event.preventDefault()
+
+      const feedId = event.target.dataset.feedId
+      const url = `http://127.0.0.1:8000/${feedId}/delete/`
+
+      const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
+      const config = {
+        headers: {'X-CSRFToken': csrftoken},
+      }
+
+      const response = await axios.post(url, {}, config)
+      
+      const url2 = 'http://127.0.0.1:8000/'
+      location.href = url2
+    }
+
+    function deleteEvent2(Anchor) {
+      Anchor.addEventListener('click',deleteClick2)
+    }
+    
+    
+    const deleteLink2 = document.querySelectorAll('.feed-delete2')
+    deleteLink2.forEach(deleteEvent2)
   </script>
 {% endblock script %}
