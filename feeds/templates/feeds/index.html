@@ -31,6 +31,9 @@ input:focus {
   text-decoration:none !important;
   color: rgb(0,55,107);
 }
+.feed-delete {
+  cursor: pointer;
+}
 {% endblock  %}
 
 
@@ -43,22 +46,38 @@ input:focus {
 <div class='d-flex flex-column align-items-center'>
 
   {% for feed in feeds %}
-  <div class="card" style="width: 600px; margin-bottom: 24px;">
+  <div class="card" style="width: 600px; margin-bottom: 24px;" id="feed-{{feed.pk}}">
+    {% comment %} 피드 상단바 {% endcomment %}
     <div class='namebar'>
-      
-      <div class='m-0 d-flex align-items-center'> 
-        <div>
-          {% if feed.user.image_url %}
-          <img src="{{feed.user.image_url.url}}" alt="" width='32' height='32' style='border-radius:50%;'>
-          {% else %}
-          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
-            <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
-            <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"/>
-          </svg> 
-          {% endif %}
+      <div class='m-0 d-flex align-items-center justify-content-between'>
+        <div class='m-0 d-flex align-items-center'> 
+          <div>
+            {% if feed.user.image_url %}
+            <img src="{{feed.user.image_url.url}}" alt="" width='32' height='32' style='border-radius:50%;'>
+            {% else %}
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
+              <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
+              <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"/>
+            </svg> 
+            {% endif %}
+          </div>
+          <div>
+            <a class='name fw-bold' href="{% url 'accounts:profile' feed.user.username %}">{{feed.user.username}}</a>
+          </div>
+
         </div>
-        <div>
-          <a class='name fw-bold' href="{% url 'accounts:profile' feed.user.username %}">{{feed.user.username}}</a>
+        {% comment %} 피드 옵션 드롭다운 {% endcomment %}
+        <div class="dropdown" style='padding-right:8px;'>
+          <button class="btn" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false" style='padding:0 8px;'>
+            <svg aria-label="옵션 더 보기" class="_8-yf5 " color="#262626" fill="#262626" height="24" role="img" viewBox="0 0 24 24" width="24"><circle cx="12" cy="12" r="1.5"></circle><circle cx="6" cy="12" r="1.5"></circle><circle cx="18" cy="12" r="1.5"></circle></svg>
+          </button>
+          <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+            {% if request.user == feed.user %}
+            <li><a class="dropdown-item feed-delete" data-feed-id="{{ feed.pk }}">피드 삭제</a></li>
+            {% endif %}
+            
+            <li><a class="dropdown-item" href="#">취소</a></li>
+          </ul>
         </div>    
       </div>
     </div>
@@ -146,7 +165,8 @@ input:focus {
                         {% endif %}
                       </div>
                     </div>
-                    <button type="button" class="btn" data-bs-dismiss="modal" aria-label="Close"><svg aria-label="옵션 더 보기" class="_8-yf5 " color="#262626" fill="#262626" height="24" role="img" viewBox="0 0 24 24" width="24"><circle cx="12" cy="12" r="1.5"></circle><circle cx="6" cy="12" r="1.5"></circle><circle cx="18" cy="12" r="1.5"></circle>
+                    <button type="button" class="btn" data-bs-dismiss="modal" aria-label="Close"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
+                      <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
                     </svg></button>
                   </div>
                   {% comment %} 본문, 댓글 {% endcomment %}
@@ -453,12 +473,65 @@ input:focus {
       for (i = 0; i<contentss.length; i++){
         // 해쉬태그로 된 문자열을 찾고, 교체하는 문자열의 $1 자리에 해쉬태그가 들어감
         contentss[i].innerHTML=contentss[i].innerText.replace(/#[^#\s]+|@[^@\s]+/gm, function(tag){
-          return (tag.indexOf('#')== 0) ? '<a href="hashtag/search/'+tag.slice(1,tag.length)+'">'+tag+'</a>':'<a href="usertag/search/'+tag.slice(1,tag.length)+'">'+tag+'</a>'
+          return (tag.indexOf('#')== 0) ? '<a href="/hashtag/search/'+tag.slice(1,tag.length)+'">'+tag+'</a>':'<a class="usertag" href="#">'+tag+'</a>'
+          {% comment %} href="/accounts/profile/'+tag.slice(1,tag.length)+'" {% endcomment %}
       });
       }
     };
 
     uHashToAnchor();
 
+    
+    {% comment %} 인물태그 user 존재 유무 따른 차이 {% endcomment %}
+    async function usertagclick(event) {
+      event.preventDefault()
+      const usertag= event.target.innerText
+      const username = usertag.slice(1,usertag.length)
+
+      const url = '/accounts/profile/' + username
+      const url2 = '/usertag/exist/' + username
+      const response = await axios.get(url2)
+      console.log(response.data)
+      if (response.data['exist']) {
+        location.href = url
+      } else {
+        alert('그 인물은 존재하지 않습니다..👎')
+      }
+      
+    }
+    function attachEvent_usertag(Anchor) {
+      Anchor.addEventListener('click',usertagclick)
+    }
+    
+    
+    const usertagAnchor = document.querySelectorAll('.usertag')
+    usertagAnchor.forEach(attachEvent_usertag)
+
+
+    {% comment %} 피드 삭제 {% endcomment %}
+    async function deleteClick(event) {
+      event.preventDefault()
+
+      const feedId = event.target.dataset.feedId
+      const url = `http://127.0.0.1:8000/${feedId}/delete/`
+
+      const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
+      const config = {
+        headers: {'X-CSRFToken': csrftoken},
+      }
+
+      const response = await axios.post(url, {}, config)
+      
+      const feed = document.querySelector(`#feed-${feedId}`)
+      feed.remove()
+    }
+
+    function deleteEvent(Anchor) {
+      Anchor.addEventListener('click',deleteClick)
+    }
+    
+    
+    const deleteLink = document.querySelectorAll('.feed-delete')
+    deleteLink.forEach(deleteEvent)
   </script>
 {% endblock script %}
