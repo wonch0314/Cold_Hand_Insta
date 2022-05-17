@@ -38,8 +38,11 @@ def create(request):
                 # 인물태그 구현
                 usertag = [word[1:] for word in words if word[0] == '@']
                 for tag in usertag:
-                    user = User.objects.get(username=tag)
-                    new_feed.tag_users.add(user)
+                    try:
+                        user = User.objects.get(username=tag)
+                        new_feed.tag_users.add(user)
+                    except:
+                        pass
                 return redirect('feeds:index')
         elif request.method == 'GET':
             form = FeedForm()
@@ -196,28 +199,29 @@ def bookmark(request, feed_pk):
     return JsonResponse(response)
 
 def hashtag_search(request,hash):
-    try:
+    # try:
         hashtag = Hashtag.objects.get(content=hash)
     
         feeds = hashtag.hashtag_feeds.all()
         context = {
             'feeds':feeds,
+            'hashtag':hash,
         }
         return render(request,'feeds/hashtag_search.html',context)
         
-    except:
-        return redirect('feeds:index')
+    # except:
+    #     return redirect('feeds:index')
 
 def usertag_search(request,user):
     user = get_object_or_404(User,username=user)
     feeds = user.tag_feeds.all()
     context = {
         'feeds':feeds,
+        'usertag':user,
     }
     return render(request,'feeds/usertag_search.html',context)
 
 def hashtag_exist(request,hash):
-        # CODE HERE
     
     hashs = Hashtag.objects.all()
     
@@ -228,6 +232,23 @@ def hashtag_exist(request,hash):
     }
 
     if hashs.filter(content=hash).exists():
+        response['exist'] = True
+    else:
+        pass
+
+    return JsonResponse(response)
+
+def usertag_exist(request,user):
+    
+    users = User.objects.all()
+    
+
+    # 응답 객체 초기화
+    response = {
+        'exist': False,
+    }
+
+    if users.filter(username=user).exists():
         response['exist'] = True
     else:
         pass

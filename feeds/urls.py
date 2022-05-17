@@ -22,6 +22,7 @@ urlpatterns = [
     path('hashtag/search/<str:hash>/',views.hashtag_search, name='hashtah_search'),
     path('hashtag/exist/<str:hash>/',views.hashtag_exist, name='hashtah_exist'),
 
-    ## UserTag - search
+    ## UserTag - search, exist
     path('usertag/search/<str:user>/',views.usertag_search, name='usertag_search'),
+    path('usertag/exist/<str:user>/',views.usertag_exist, name='usertag_exist'),
 ]
