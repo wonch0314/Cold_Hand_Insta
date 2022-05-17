@@ -63,7 +63,8 @@
 
 {% block content %}
 
-<div class='row m-0 profile-area d-flex justify-content-between' style="min-width: 776px;">
+
+<div class='row my-5 profile-area d-flex justify-content-between' style="min-width: 776px;">
   
   <div class='col-5 profile-image mb-5'>
     <div class='rectangle mx-auto rounded-circle d-flex justify-content-center'>
@@ -83,20 +84,28 @@
           <form action="{% url 'accounts:update' user.username %}" class='my-auto'>
             <button class='fs-6 mx-4 rounded-3 border' style='background-color: #F7F7F7'>프로필 편집</button>
           </form>
+        {% elif request.user in user.followers.all %}
+        <form class='my-auto' id='follow-form' data-username="{{ user.username }}">
+          <button id='follow-btn' class='fs-6 mx-4 rounded-3 border'>팔로우 취소</button>
+        </form>
+        {% else %}
+        <form class='my-auto' id='follow-form' data-username="{{ user.username }}">
+          <button id='follow-btn' class='fs-6 mx-4 rounded-3 border'>팔로우</button>
+        </form>
         {% endif %}
       </div>
     </div>
 
     <div class='d-flex my-3'>
       <p>게시물 </p>
-      <p class='mx-4'>팔로워 {{user.followees.all|length}}</p>
-      <p>팔로우 {{user.followers.all|length}}</p>
+      <p id='follower-num'class='mx-4'>팔로워 {{user.followers.all|length}}</p>
+      <p id='followee-num'>팔로우 {{user.followees.all|length}}</p>
     </div>
   </div>
 </div>
 
 
-<div class='d-flex justify-content-center border-top'>
+<div class='d-flex justify-content-center border-top' style="margin-top: 120px;">
   <a href='#' id='feed-btn' class='pt-2 text-decoration-none text-black active' >게시물</a>
   <a href='#' id='bk-btn' class='pt-2 text-decoration-none text-black' style='margin: 0px 150px;'>저장됨</a>
   <a href='#' id='tag-btn' class='pt-2 text-decoration-none text-black'>태그됨</a>
@@ -768,8 +777,35 @@
       tagBody.classList.remove('d-none')
     })
 
-  
+  const followForm = document.querySelector('#follow-form')
+  const followerNum = document.querySelector('#follower-num')
 
-    path('<str:username>/follows/',views.js_follows,name='follows'),
+
+  function updateFollowState(followed, count) {
+    const followBtn = document.querySelector('#follow-btn')
+    followBtn.innerText = followed ? '팔로우 취소' : '팔로우'
+    followerNum.innerText = `팔로워 ${count}`
+  }
+
+  async function onSubmit_follow (event) {
+    event.preventDefault()
+    const username = event.target.dataset.username
+    const url = `http://127.0.0.1:8000/accounts/${username}/follows/`
+  
+    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
+    const config = {
+      headers: {'X-CSRFToken': csrftoken},
+    }
+
+    const response = await axios.post(url, {}, config)
+    const { followed, count } = response.data
+    console.log(followed, count)
+    updateFollowState(followed, count)
+  }
+    
+  followForm.addEventListener('submit', onSubmit_follow)
+
+
+    
   </script>
 {% endblock script %}

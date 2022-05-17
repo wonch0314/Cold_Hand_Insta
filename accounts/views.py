@@ -93,19 +93,26 @@ def follows(request,username):
     return redirect('accounts:profile',you.username)
 
 def js_follows(request, username):
-    you  = get_object_or_404(get_user_model(),username=username)
-    me = request.user
-    if you.username != me.username:
-        if you.followers.filter(username=me.username).exists():
-            you.followers.remove(me)
-        else:
-            you.followers.add(me)
-    data = {
-        'you': you,
-        'me': me,
-    }
-    
-    return JsonResponse(data)
+    if request.method == 'POST':
+        you  = get_object_or_404(get_user_model(),username=username)
+        me = request.user
+        response = {
+            'followed': False,
+            'count': 0,
+        }
+        if you.username != me.username:
+            if you.followers.filter(username=me.username).exists():
+                you.followers.remove(me)
+                response['count'] = you.followers.count()
+            else:
+                you.followers.add(me)
+                response['followed'] = True
+                response['count'] = you.followers.count()
+        
+        
+        return JsonResponse(response)
+    return redirect('accounts/login/')
+
 # def update(request, username):
 #     you  = get_object_or_404(get_user_model(),username=username)
 #     me = request.user
