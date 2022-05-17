@@ -6,6 +6,14 @@ class FeedForm(forms.ModelForm):
     class Meta:
         model = Feed
         fields = ('content','image_url')
+    
+    content = forms.CharField(
+        widget=forms.Textarea(
+            attrs={
+                'class': 'form-control p-4'
+            }
+        )
+    )
 
 class CommentForm(forms.ModelForm):
 
