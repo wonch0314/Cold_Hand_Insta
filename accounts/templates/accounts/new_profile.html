@@ -97,15 +97,77 @@
     </div>
 
     <div class='d-flex my-3'>
-      <p>게시물 </p>
-      <p id='follower-num'class='mx-4'>팔로워 {{user.followers.all|length}}</p>
-      <p id='followee-num'>팔로우 {{user.followees.all|length}}</p>
+      <p>게시물 {{ feeds|length }}</p>
+      <a href="" data-bs-toggle="modal" data-bs-target="#FollowerModal" class='text-decoration-none'><p id='follower-num'class='mx-4'>팔로워 {{user.followers.all|length}}</p></a>
+      <a href="" data-bs-toggle="modal" data-bs-target="#FolloweeModal" class='text-decoration-none'><p id='followee-num'>팔로우 {{user.followees.all|length}}</p></a>
     </div>
   </div>
 </div>
 
 
-<div class='d-flex justify-content-center border-top' style="margin-top: 120px;">
+
+<div class="modal fade" id="FollowerModal" tabindex="-1" role="dialog" aria-labelledby="followerLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+    <div class="modal-content mx-auto" style='width: 25%;'>
+      <div class="modal-header">
+        <h5 class="modal-title mx-auto" id="followerLabel">팔로워 리스트</h5>
+      </div>
+      <div class="modal-body" style='height: 300px;'>
+        {% for follower in user.followers.all %}
+        <a href="{% url 'accounts:profile' follower.username %}" class='text-decoration-none align-center'>
+          <div class='border mb-3'>
+            <div class='d-flex' style='width: 50px; height: 50px;'>
+              {% if follower.image_url  %}
+                <img width='100%' src="{{ follower.image_url.url }}" alt="">
+              {% else %}
+                <img width='100%' src="https://profileimg.plaync.com/account_profile_images/8A3BFAF2-D15F-E011-9A06-E61F135E992F?imageSize=large" alt="">
+              {% endif %}
+              <div class='mx-4 align-center' style='padding: 12.5px;'>
+                <p class='m-0 text-black'>{{ follower }}</p>
+              </div>
+            </div>
+          </div>
+        </a>
+        {% endfor %}
+        
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="FolloweeModal" tabindex="-1" role="dialog" aria-labelledby="followeeLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+    <div class="modal-content mx-auto" style='width: 25%;'>
+      <div class="modal-header">
+        <h5 class="modal-title mx-auto" id="followeeLabel">팔로우 리스트</h5>
+      </div>
+      <div class="modal-body" style='height: 300px;'>
+        {% for followee in user.followees.all %}
+        <a href="{% url 'accounts:profile' followee.username %}" class='text-decoration-none align-center'>
+          <div class='border mb-3'>
+            <div class='d-flex' style='height: 50px;'>
+              {% if followee.image_url  %}
+                <img width='50px' src="{{ followee.image_url.url }}" alt="">
+              {% else %}
+                <img width='50px' src="https://profileimg.plaync.com/account_profile_images/8A3BFAF2-D15F-E011-9A06-E61F135E992F?imageSize=large" alt="">
+              {% endif %}
+              <div class='mx-4'>
+                <span class='text-black'>{{ followee.username }}</span>
+              </div>
+            </div>
+          </div>
+        </a>
+        {% endfor %}
+        
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+<div class='d-flex justify-content-center border-top' style="margin-top: 90px;">
   <a href='#' id='feed-btn' class='pt-2 text-decoration-none text-black active' >게시물</a>
   <a href='#' id='bk-btn' class='pt-2 text-decoration-none text-black' style='margin: 0px 150px;'>저장됨</a>
   <a href='#' id='tag-btn' class='pt-2 text-decoration-none text-black'>태그됨</a>
@@ -113,7 +175,7 @@
 
 <div id='feed-body'class='row my-4'>
   {% for feed in feeds %}
-  <div class='col-4 p-3 d-flex flex-wrap align-items-center'>
+  <div class='col-4 p-3 d-flex justify-content-center align-items-center'>
       <a href='#' style='color:gray; text-decoration:none;' data-bs-toggle="modal" data-bs-target="#exampleModal{{feed.pk}}">
         <div class='h-100'>
           <img id="feed-image-{{ feed.pk }}" class='feed-image' src="{{feed.image_url.url}}">
