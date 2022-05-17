@@ -51,4 +51,21 @@ class CustomPasswordChangeForm(PasswordChangeForm):
     
     class Meta(PasswordChangeForm):
         model = User
-        fields = ('__all__')
+        fields = ('old_password', 'new_password1', 'new_password2')
+    
+    old_password = forms.CharField(
+        widget=forms.PasswordInput(
+            attrs={'placeholder': 'Old Password',
+                    'class': 'form-control mb-4',
+                }))
+    
+    new_password1 = forms.CharField(
+        widget=forms.PasswordInput(
+            attrs={'placeholder': 'New Password',
+                    'class': 'form-control mb-4',
+                    }))
+    new_password2 = forms.CharField(
+        widget=forms.PasswordInput(
+            attrs={'placeholder': 'Confirm New Password',
+                    'class': 'form-control mb-4',
+                    }))

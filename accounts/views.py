@@ -1,5 +1,6 @@
 from multiprocessing import AuthenticationError
 from django.contrib import messages
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from .forms import CustomPasswordChangeForm, UserForm, CustomUserChangeForm, PasswordChangeForm
 from django.contrib.auth.forms import (
@@ -30,6 +31,17 @@ def signup(request):
     }
     return render(request,'accounts/signup.html',context)
 
+def delete(request, username):
+    user = get_object_or_404(get_user_model(), username=username)
+    if request.method == "POST":
+        if request.user == user:
+            user.delete()
+        return redirect('feeds:index')
+        
+            
+        
+        
+
 def login(request):
 
     if request.user.is_authenticated:
@@ -57,7 +69,7 @@ def logout(request):
     auth_logout(request)
     return redirect('feeds:index')
 
-def profile(request,username):
+def old_profile(request,username):
     user = User.objects.get(username=username)
     feeds = user.user_feeds.all()
     comments = user.user_comments.all()
@@ -69,7 +81,7 @@ def profile(request,username):
     return render(request,'accounts/profile.html',context)
 
 def follows(request,username):
-    you  = get_object_or_404(get_user_model(),username=username)
+    you  = get_object_or_404(get_user_model(), username=username)
     me = request.user
 
     if you.username != me.username:
@@ -80,42 +92,63 @@ def follows(request,username):
     
     return redirect('accounts:profile',you.username)
 
-def update(request, username):
-    you  = get_object_or_404(get_user_model(),username=username)
-    me = request.user
-    if you.username == me.username:
-        if request.method == 'GET':
-            form = CustomUserChangeForm(instance = you)
-            context = {
-                'form': form
-            }
-            return render(request, 'accounts/update.html', context)
-        elif request.method == 'POST':
-            form = CustomUserChangeForm(request.POST, request.FILES, instance=you)
-            if form.is_valid():
-                form.save()
-                return redirect('accounts:profile', you.username)
-            context = {
-                'form': form
-            }
-            return render(request, 'accounts/update.html', context)
-    return redirect('accounts:profile', username)
-
-def password(request, username):
-    user = get_object_or_404(User, username=username)
-    
+def js_follows(request, username):
     if request.method == 'POST':
-        form = CustomPasswordChangeForm(request.user, request.POST)
-        if form.is_valid():
-            user = form.save()
-            update_session_auth_hash(request, user)  # Important!
-            messages.success(request, 'Your password was successfully updated!')
-            return redirect('accounts:profile', user.username)
-        else:
-            messages.error(request, 'Please correct the error below.')
-    else:
-        form = PasswordChangeForm(request.user)
-    return render(request, 'accounts/password.html', {'form': form})
+        you  = get_object_or_404(get_user_model(),username=username)
+        me = request.user
+        response = {
+            'followed': False,
+            'count': 0,
+        }
+        if you.username != me.username:
+            if you.followers.filter(username=me.username).exists():
+                you.followers.remove(me)
+                response['count'] = you.followers.count()
+            else:
+                you.followers.add(me)
+                response['followed'] = True
+                response['count'] = you.followers.count()
+        
+        
+        return JsonResponse(response)
+    return redirect('accounts/login/')
+
+# def update(request, username):
+#     you  = get_object_or_404(get_user_model(),username=username)
+#     me = request.user
+#     if you.username == me.username:
+#         if request.method == 'GET':
+#             form = CustomUserChangeForm(instance = you)
+#             context = {
+#                 'form': form
+#             }
+#             return render(request, 'accounts/update.html', context)
+#         elif request.method == 'POST':
+#             form = CustomUserChangeForm(request.POST, request.FILES, instance=you)
+#             if form.is_valid():
+#                 form.save()
+#                 return redirect('accounts:profile', you.username)
+#             context = {
+#                 'form': form
+#             }
+#             return render(request, 'accounts/update.html', context)
+#     return redirect('accounts:profile', username)
+
+# def password(request, username):
+#     user = get_object_or_404(User, username=username)
+    
+#     if request.method == 'POST':
+#         form = CustomPasswordChangeForm(request.user, request.POST)
+#         if form.is_valid():
+#             user = form.save()
+#             update_session_auth_hash(request, user)  # Important!
+#             messages.success(request, 'Your password was successfully updated!')
+#             return redirect('accounts:profile', user.username)
+#         else:
+#             messages.error(request, 'Please correct the error below.')
+#     else:
+#         form = PasswordChangeForm(request.user)
+#     return render(request, 'accounts/password.html', {'form': form})
 
 def bookmark(request, username):
     user = get_object_or_404(User, username=username)
@@ -160,3 +193,18 @@ def new_update(request, username):
             return render(request, 'accounts/update.html', context)
     return redirect('accounts:profile', username)
 
+
+
+def profile(request, username):
+    user = User.objects.get(username=username)
+    
+    feeds = user.user_feeds.all()
+    bk_feeds = user.bk_feed.all()
+    tag_feeds = user.tag_feeds.all()
+    context = {
+        'user':user,
+        'feeds': feeds,
+        'bk_feeds': bk_feeds,
+        'tag_feeds': tag_feeds,
+    }
+    return render(request,'accounts/new_profile.html',context)

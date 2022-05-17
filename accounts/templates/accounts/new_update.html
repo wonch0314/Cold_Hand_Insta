@@ -2,7 +2,8 @@
 
 {% block style %}
 .list-item:hover {
-  background: lightgrey
+  background: lightgrey;
+  cursor: pointer;
 }
 
 .list-item {
@@ -31,6 +32,7 @@ li > * {
 
 .selected {
   border-left: solid 3px black;
+  
 }
 {% endblock style %}
 
@@ -46,12 +48,15 @@ li > * {
       <li>
         <a id='pw-btn' class='list-item d-block'>비밀번호 편집</a>
       </li>
+      <li>
+        <a id='delete-btn' class='list-item d-block'>회원 탈퇴</a>
+      </li>
     </ul>
   </div>
   
   
   <!--update 영역-->
-  <div class='border w-100' style='min-width:600px;'>
+  <div class='border w-100' style='min-width:600px; height: 540px;'>
     <div id='change-username'>
       <form method='POST' enctype='multipart/form-data'>
         {% csrf_token %}
@@ -93,7 +98,7 @@ li > * {
       </form>
     </div>
 
-    <div id='change-password' class='d-none'>
+    <div id='change-password' class='d-none p-5' style='height: 540px;'>
       <div class='d-flex image-and-name mb-3'>
         <!--현재 이미지 사진 보여주기-->
         <div class='left-area'>
@@ -134,7 +139,6 @@ li > * {
           </div>
         </div>
   
-  
         <div class='d-flex password-form'>
           <div class='left-area text-end'>
             <span style="font-size: 21px;">새 비밀번호 확인</span>
@@ -147,8 +151,19 @@ li > * {
   
   
         <!--form 제출 버튼-->
-        <div class='mb-5' style="padding-left: 220px;">
+        <div class='mb-5' style="padding-left: 210px;">
           <button class='btn btn-outline-primary m-0'>비밀번호 변경</button>
+        </div>
+  
+      </form>
+    </div>
+
+    <div id='delete-form' class='d-none p-5' style='height: 540px;'>
+      <form action="{% url 'accounts:delete' user.username %}" method='POST' enctype='multipart/form-data'>
+        {% csrf_token %}
+        <div class='d-flex justify-content-around'>
+          <p class='m-0 font-weight-bold ml-3' style="font-size: 21px; font-weight: bold;">탈퇴 하시겠습니까?</p>
+          <button class='btn btn-outline-danger'>회원 탈퇴</button>
         </div>
   
       </form>
@@ -163,24 +178,43 @@ li > * {
 <script>
 const pfBtn = document.querySelector('#pf-btn')
 const pwBtn = document.querySelector('#pw-btn')
+const deleteBtn = document.querySelector('#delete-btn')
+const btnList = [pfBtn, pwBtn, deleteBtn]
+
 const nameForm = document.querySelector('#change-username')
 const pwForm = document.querySelector('#change-password')
+const deleteForm = document.querySelector('#delete-form')
+const formList = [nameForm, pwForm, deleteForm]
+
+const goInitial = function() {
+  btnList.forEach(btn => {
+    btn.classList.remove('selected')
+  })
+  formList.forEach(form => {
+    form.classList.add('d-none')
+  })
+}
 
 pfBtn.addEventListener('click', () => {
-  nameForm.classList = ''
-  pwForm.classList = ''
-  pwForm.classList.add('d-none')
-  pwBtn.classList.remove('selected')
+  event.preventDefault()
+  goInitial()
   pfBtn.classList.add('selected')
+  nameForm.classList.remove('d-none')
 })
 
 
 pwBtn.addEventListener('click', () => {
-  nameForm.classList = ''
-  pwForm.classList = ''
-  nameForm.classList.add('d-none')
-  pfBtn.classList.remove('selected')
+  event.preventDefault()
+  goInitial()
   pwBtn.classList.add('selected')
+  pwForm.classList.remove('d-none')
+})
+
+deleteBtn.addEventListener('click', () => {
+  event.preventDefault()
+  goInitial()
+  deleteBtn.classList.add('selected')
+  deleteForm.classList.remove('d-none')
 })
 
 </script>

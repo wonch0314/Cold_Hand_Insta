@@ -97,19 +97,19 @@
 
 
 <div class='d-flex justify-content-center border-top'>
-  <a class='pt-2 text-decoration-none text-black active' href="{% url 'accounts:profile' user.username %}">게시물</a>
-  <a class='pt-2 text-decoration-none text-black' href="{% url 'accounts:bk_feeds' user.username %}" style='margin: 0px 150px;'>저장됨</a>
-  <a class='pt-2 text-decoration-none text-black' href="{% url 'accounts:tag_feeds' user.username %}" >태그됨</a>
+  <a id='feed-btn' class='pt-2 text-decoration-none text-black active' href="{% url 'accounts:profile' user.username %}">게시물</a>
+  <a id='bk-btn' class='pt-2 text-decoration-none text-black' href="{% url 'accounts:bk_feeds' user.username %}" style='margin: 0px 150px;'>저장됨</a>
+  <a id='tag-btn' class='pt-2 text-decoration-none text-black' href="{% url 'accounts:tag_feeds' user.username %}" >태그됨</a>
 </div>
 
 <div class='row my-4'>
 
 
-{% for feed in feeds %}
+  <span id="start-for">{% for feed in feeds %}</span>
   <div class='col-4 p-3 d-flex flex-wrap align-items-center'>
     <a href='#' style='color:gray; text-decoration:none;' data-bs-toggle="modal" data-bs-target="#exampleModal{{feed.pk}}">
       <div class='h-100'>
-        <img class='feed-image' src="{{feed.image_url.url}}">
+        <img id="feed-image-{{ feed.pk }}" class='feed-image' src="{{feed.image_url.url}}">
       </div>
     </a>
 
@@ -118,7 +118,7 @@
         <div class="modal-content d-flex flex-row justify-content-between" style="min-height:450px;">
           {% comment %} 사진 구역 {% endcomment %}
           <div class="modal-header p-0 bg-black" style='width:calc(100% - 404px);'>
-            <img src="{{feed.image_url.url}}" alt="" style='width:100%'>
+            <img id="modal-image-{{ feed.pk }}" src="{{feed.image_url.url}}" alt="" style='width:100%'>
           </div>
           <div style='width:404px' class='d-flex flex-column justify-content-between'>
             <div style='width:404px'>
@@ -434,5 +434,6 @@
 
     const formList_comment = document.querySelectorAll('.comment-form')
     formList_comment.forEach(attachEvent_comment)
+
   </script>
 {% endblock script %}
