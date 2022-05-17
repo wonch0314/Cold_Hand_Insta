@@ -2,10 +2,8 @@ from multiprocessing import AuthenticationError
 from django.contrib import messages
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
-from .forms import CustomPasswordChangeForm, UserForm, CustomUserChangeForm, PasswordChangeForm
-from django.contrib.auth.forms import (
-    AuthenticationForm,
-)
+from .forms import CustomPasswordChangeForm, CustomUserForm, CustomUserChangeForm, CustomAuthenticationForm
+
 from django.contrib.auth import (
     login as auth_login,
     logout as auth_logout,
@@ -15,17 +13,17 @@ from django.contrib.auth import (
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 from .models import User
-from feeds.models import Feed, Comment
+
 
 # Create your views here.
 def signup(request):
     if request.method == 'POST':
-        form = UserForm(request.POST)
+        form = CustomUserForm(request.POST)
         if form.is_valid():
             form.save()
             return redirect('feeds:index')
     else:
-        form = UserForm()
+        form = CustomUserForm()
     context = {
         'form':form
     }
@@ -48,7 +46,7 @@ def login(request):
         return redirect('feeds:index')
 
     if request.method == 'POST':
-        form = AuthenticationForm(request, request.POST)
+        form = CustomAuthenticationForm(request, request.POST)
         if form.is_valid():
             user = form.get_user()
             auth_login(request,user)
@@ -57,7 +55,7 @@ def login(request):
             return redirect(next_url or 'feeds:index')
     
     else:
-        form = AuthenticationForm()
+        form = CustomAuthenticationForm()
     context = {
         'form':form,
     }
@@ -134,21 +132,21 @@ def js_follows(request, username):
 #             return render(request, 'accounts/update.html', context)
 #     return redirect('accounts:profile', username)
 
-# def password(request, username):
-#     user = get_object_or_404(User, username=username)
+def password(request, username):
+    user = get_object_or_404(User, username=username)
     
-#     if request.method == 'POST':
-#         form = CustomPasswordChangeForm(request.user, request.POST)
-#         if form.is_valid():
-#             user = form.save()
-#             update_session_auth_hash(request, user)  # Important!
-#             messages.success(request, 'Your password was successfully updated!')
-#             return redirect('accounts:profile', user.username)
-#         else:
-#             messages.error(request, 'Please correct the error below.')
-#     else:
-#         form = PasswordChangeForm(request.user)
-#     return render(request, 'accounts/password.html', {'form': form})
+    if request.method == 'POST':
+        form = CustomPasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)  # Important!
+            messages.success(request, 'Your password was successfully updated!')
+            return redirect('accounts:profile', user.username)
+        else:
+            messages.error(request, 'Please correct the error below.')
+    else:
+        form = CustomPasswordChangeForm(request.user)
+    return render(request, 'accounts/new_update.html', {'form': form})
 
 def bookmark(request, username):
     user = get_object_or_404(User, username=username)
@@ -190,7 +188,7 @@ def new_update(request, username):
             context = {
                 'form': form
             }
-            return render(request, 'accounts/update.html', context)
+            return render(request, 'accounts/new_update.html', context)
     return redirect('accounts:profile', username)
 
 
@@ -198,7 +196,7 @@ def new_update(request, username):
 def profile(request, username):
     user = User.objects.get(username=username)
     
-    feeds = user.user_feeds.all()
+    feeds = user.user_feeds.all().order_by('-id')
     bk_feeds = user.bk_feed.all()
     tag_feeds = user.tag_feeds.all()
     context = {

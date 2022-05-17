@@ -1,9 +1,9 @@
 from django import forms
 from .models import User
-from django.contrib.auth.forms import UserChangeForm, UserCreationForm, PasswordChangeForm
+from django.contrib.auth.forms import UserChangeForm, UserCreationForm, PasswordChangeForm, AuthenticationForm
 from django.contrib.auth import get_user_model
 
-class UserForm(UserCreationForm):
+class CustomUserForm(UserCreationForm):
 
     
     class Meta(UserCreationForm.Meta):
@@ -69,3 +69,28 @@ class CustomPasswordChangeForm(PasswordChangeForm):
             attrs={'placeholder': 'Confirm New Password',
                     'class': 'form-control mb-4',
                     }))
+
+
+class CustomAuthenticationForm(AuthenticationForm):
+    
+    class Meta(AuthenticationForm):
+        model = User
+        fields = ('username', 'password')
+
+    username = forms.CharField(
+        widget = forms.TextInput(
+            attrs = {
+                'placeholder': 'Username',
+                'class': 'form-control'
+            }
+        )
+    )
+    
+    password = forms.CharField(
+        widget = forms.PasswordInput(
+            attrs = {
+                'placeholder': 'Password',
+                'class': 'form-control'
+            }
+        )
+    )
