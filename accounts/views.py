@@ -2,6 +2,7 @@ from multiprocessing import AuthenticationError
 from django.contrib import messages
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from pkg_resources import require
 from .forms import CustomPasswordChangeForm, CustomUserForm, CustomUserChangeForm, CustomAuthenticationForm
 
 from django.contrib.auth import (
@@ -11,7 +12,7 @@ from django.contrib.auth import (
     get_user_model,
 )
 from django.contrib.auth.decorators import login_required
-from django.views.decorators.http import require_POST
+from django.views.decorators.http import require_POST, require_http_methods
 from .models import User
 
 
@@ -29,6 +30,8 @@ def signup(request):
     }
     return render(request,'accounts/signup.html',context)
 
+@login_required
+@require_POST
 def delete(request, username):
     user = get_object_or_404(get_user_model(), username=username)
     if request.method == "POST":
@@ -67,29 +70,6 @@ def logout(request):
     auth_logout(request)
     return redirect('feeds:index')
 
-def old_profile(request,username):
-    user = User.objects.get(username=username)
-    feeds = user.user_feeds.all()
-    comments = user.user_comments.all()
-    context = {
-        'user':user,
-        'feeds': feeds,
-        'comments': comments,
-    }
-    return render(request,'accounts/profile.html',context)
-
-def follows(request,username):
-    you  = get_object_or_404(get_user_model(), username=username)
-    me = request.user
-
-    if you.username != me.username:
-        if you.followers.filter(username=me.username).exists():
-            you.followers.remove(me)
-        else:
-            you.followers.add(me)
-    
-    return redirect('accounts:profile',you.username)
-
 @login_required
 def js_follows(request, username):
     if request.method == 'POST':
@@ -112,27 +92,8 @@ def js_follows(request, username):
         return JsonResponse(response)
     return redirect('accounts/login/')
 
-# def update(request, username):
-#     you  = get_object_or_404(get_user_model(),username=username)
-#     me = request.user
-#     if you.username == me.username:
-#         if request.method == 'GET':
-#             form = CustomUserChangeForm(instance = you)
-#             context = {
-#                 'form': form
-#             }
-#             return render(request, 'accounts/update.html', context)
-#         elif request.method == 'POST':
-#             form = CustomUserChangeForm(request.POST, request.FILES, instance=you)
-#             if form.is_valid():
-#                 form.save()
-#                 return redirect('accounts:profile', you.username)
-#             context = {
-#                 'form': form
-#             }
-#             return render(request, 'accounts/update.html', context)
-#     return redirect('accounts:profile', username)
-
+@require_POST
+@login_required
 def password(request, username):
     user = get_object_or_404(User, username=username)
     
@@ -149,26 +110,8 @@ def password(request, username):
         form = CustomPasswordChangeForm(request.user)
     return render(request, 'accounts/new_update.html', {'form': form})
 
-def bookmark(request, username):
-    user = get_object_or_404(User, username=username)
-    feeds = user.bk_feed.all()
-    context = {
-        'user': user,
-        'feeds': feeds,
-    }
-    return render(request, 'accounts/profile_bookmark.html', context)
-
-def tag(request, username):
-    user = get_object_or_404(User, username=username)
-    feeds = user.tag_feeds.all()
-    context = {
-        'user': user,
-        'feeds': feeds,
-    }
-    return render(request, 'accounts/profile_tag.html', context)
-
-
-
+@require_http_methods(['POST', 'GET'])
+@login_required
 def new_update(request, username):
     you  = get_object_or_404(get_user_model(),username=username)
     me = request.user
