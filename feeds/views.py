@@ -2,6 +2,7 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render, redirect
 from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_http_methods
 
 from insta.settings import AUTH_USER_MODEL
 from .models import Feed, Comment, Hashtag
@@ -16,6 +17,8 @@ def index(request):
     }
     return render(request,'feeds/index.html', context)
 
+@login_required
+@require_http_methods(['GET','POST'])
 def create(request):
     if request.user.is_authenticated:
         if request.method == 'POST':
@@ -52,41 +55,8 @@ def create(request):
             return render(request, 'feeds/new.html', context)
     return redirect('accounts:login')
 
-def detail(request, feed_pk):
-    if request.method == 'GET':
-        feed = get_object_or_404(Feed, pk=feed_pk)
-        user = get_object_or_404(User,pk=feed.user_id)
-        comments = feed.feed_comments.all()
-        form = CommentForm()
-        context = {
-            'feed': feed,
-            'comments': comments,
-            'form': form,
-            'user':user,
-        }
-        return render(request, 'feeds/detail.html', context)
-
-
-def update(request, feed_pk):
-    feed = get_object_or_404(Feed, pk=feed_pk)
-    
-    if request.user.is_authenticated:
-        if request.method == 'POST':
-            form = FeedForm(request.POST, request.FILES, instance=feed)
-            if form.is_valid():
-                form.save()
-                return redirect('feeds:detail', feed.pk)
-            
-        else:
-            form = FeedForm(instance=feed)
-        context = {
-            'form': form,
-            'feed': feed,
-        }
-        return render(request, 'feeds/update.html', context)
-    return redirect('accounts:login')
-
-@require_POST
+@login_required
+@require_http_methods(['POST'])
 def delete(request, feed_pk):
     
     if request.user.is_authenticated:
@@ -101,7 +71,7 @@ def delete(request, feed_pk):
 
         return JsonResponse(response)
 
-@require_POST
+@require_http_methods(['POST'])
 @login_required
 def like(request, feed_pk):
     # 응답 객체 초기화
@@ -109,80 +79,45 @@ def like(request, feed_pk):
         'liked':False,
         'count':0,
     }
-    if request.user.is_authenticated:
-        feed = get_object_or_404(Feed,pk=feed_pk)
-        user = request.user
+    feed = get_object_or_404(Feed,pk=feed_pk)
+    user = request.user
 
 
-        if feed.like_users.filter(pk=user.pk).exists():
-            feed.like_users.remove(user)
-        
-        else:
-            feed.like_users.add(user)
-            response['liked'] = True
-        
-        response['count'] = feed.like_users.count()
-        
-        return JsonResponse(response)
+    if feed.like_users.filter(pk=user.pk).exists():
+        feed.like_users.remove(user)
+    
+    else:
+        feed.like_users.add(user)
+        response['liked'] = True
+    
+    response['count'] = feed.like_users.count()
+    
     return JsonResponse(response)
 
-@require_POST
+@require_http_methods(['POST'])
+@login_required
 def comment_create(request, feed_pk):
     response = {
         "username" : '',
         'content' : '',
         'created_at' : '',
     }
-    if request.user.is_authenticated:
-        feed = get_object_or_404(Feed, pk=feed_pk)
-        form = CommentForm(data=request.POST)
-        
-        if form.is_valid():
-            comment = form.save(commit=False)
-            comment.user = request.user
-            comment.feed = feed
-            comment.save()
-            response['username'] = comment.user.username
-            response['content'] = comment.content
-            response['created_at'] = comment.created_at
-            return JsonResponse(response)
+    feed = get_object_or_404(Feed, pk=feed_pk)
+    form = CommentForm(data=request.POST)
+    
+    if form.is_valid():
+        comment = form.save(commit=False)
+        comment.user = request.user
+        comment.feed = feed
+        comment.save()
+        response['username'] = comment.user.username
+        response['content'] = comment.content
+        response['created_at'] = comment.created_at
+        return JsonResponse(response)
     JsonResponse(response)
 
-def comment_update(request, feed_pk, comment_pk):
-    if request.user.is_authenticated:
-        feed = get_object_or_404(Feed, pk=feed_pk)
-        comment = get_object_or_404(Comment, pk=comment_pk)
-        if request.method == 'POST':
-            form = CommentForm(instance=comment,data=request.POST)
-            if form.is_valid():
-                form.save()
-                return redirect('feeds:detail', feed_pk)
-            context = {
-                'feed': feed,
-                'comment': comment,
-                'form': form
-            }
-            return render(request, 'feeds/update_comment.html', context)
-        
-        elif request.method == 'GET':
-            form = CommentForm(instance=comment)
-            context = {
-                'feed': feed,
-                'comment': comment,
-                'form': form,
-            }
-            return render(request, 'feeds/update_comment.html', context)
-    return redirect('accounts:login')
-
-def comment_delete(request, feed_pk, comment_pk):
-    if request.user.is_authenticated:
-        if request.method=='POST':
-            comment = get_object_or_404(Comment, pk = comment_pk)
-            comment.delete()
-            return redirect('feeds:detail', feed_pk)
-    return redirect('accounts:login')
-
-@require_POST
+@require_http_methods(['POST'])
+@login_required
 def bookmark(request, feed_pk):
     # 응답 객체 초기화 
     response = {
@@ -203,27 +138,16 @@ def bookmark(request, feed_pk):
     return JsonResponse(response)
 
 def hashtag_search(request,hash):
-    # try:
-        hashtag = Hashtag.objects.get(content=hash)
-    
-        feeds = hashtag.hashtag_feeds.all()
-        context = {
-            'feeds':feeds,
-            'hashtag':hash,
-        }
-        return render(request,'feeds/hashtag_search.html',context)
-        
-    # except:
-    #     return redirect('feeds:index')
+    hashtag = Hashtag.objects.get(content=hash)
 
-def usertag_search(request,user):
-    user = get_object_or_404(User,username=user)
-    feeds = user.tag_feeds.all()
+    feeds = hashtag.hashtag_feeds.all()
     context = {
         'feeds':feeds,
-        'usertag':user,
+        'hashtag':hash,
     }
-    return render(request,'feeds/usertag_search.html',context)
+    return render(request,'feeds/hashtag_search.html',context)
+
+
 
 def hashtag_exist(request,hash):
     

@@ -7,22 +7,17 @@ urlpatterns = [
     path('', views.index, name='index'),
     ## Feed - Create Read(detail) Update Delete
     path('create/', views.create, name='create'),
-    path('<int:feed_pk>/detail/', views.detail, name='detail'),
-    path('<int:feed_pk>/update/', views.update, name='update'),
     path('<int:feed_pk>/delete/', views.delete, name='delete'),
     path('<int:feed_pk>/like/', views.like, name='like'),
     path('<int:feed_pk>/bookmark/', views.bookmark, name='bookmark'),
     
     ## Comment - Create Read(detail 불필요) Update Delete
     path('<int:feed_pk>/comment/create/', views.comment_create, name='comment_create'),
-    path('<int:feed_pk>/comment/<int:comment_pk>/update/', views.comment_update, name='comment_update'),
-    path('<int:feed_pk>/comment/<int:comment_pk>/delete/', views.comment_delete, name='comment_delete'),
 
     ## HashTag - search,, exist
     path('hashtag/search/<str:hash>/',views.hashtag_search, name='hashtah_search'),
     path('hashtag/exist/<str:hash>/',views.hashtag_exist, name='hashtah_exist'),
 
     ## UserTag - search, exist
-    path('usertag/search/<str:user>/',views.usertag_search, name='usertag_search'),
     path('usertag/exist/<str:user>/',views.usertag_exist, name='usertag_exist'),
 ]

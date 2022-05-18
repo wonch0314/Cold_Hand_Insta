@@ -648,7 +648,11 @@
 
       const response = await axios.post(url, {}, config)
       const { liked, count } = response.data 
-      updateLikeStatus(feedId, liked, count)
+      if (count == undefined) {
+        location.href = '/accounts/login/'
+      } else {
+        updateLikeStatus(feedId, liked, count)
+      }
     }
     
     function attachEvent(form) {
@@ -683,7 +687,11 @@
       const response = await axios.post(url, {}, config)
       const { booked } = response.data 
 
-      updateBookStatus(feedId, booked)
+      if (booked == undefined) {
+        location.href = '/accounts/login/'
+      } else {
+        updateBookStatus(feedId, booked)
+      }
     }
     
     function attachEvent_B(form) {
@@ -717,7 +725,11 @@
 
       const response = await axios.post(url, {}, config)
       const { liked, count } = response.data 
-      updateLikeStatus2(feedId, liked, count)
+      if (count == undefined) {
+        location.href = '/accounts/login/'
+      } else {
+        updateLikeStatus(feedId, liked, count)
+      }
     }
     
     function attachEvent2(form) {
@@ -752,7 +764,11 @@
       const response = await axios.post(url, {}, config)
       const { booked } = response.data 
 
-      updateBookStatus2(feedId, booked)
+      if (booked == undefined) {
+        location.href = '/accounts/login/'
+      } else {
+        updateBookStatus(feedId, booked)
+      }
     }
     
     function attachEvent_B2(form) {
@@ -797,7 +813,11 @@
       const response = await axios.post(url, data)
       const { username, content, created_at } = response.data 
 
-      updateCommentStatus(feedId, username, content, created_at)
+      if (username == undefined) {
+        location.href = '/accounts/login/'
+      } else {
+        updateCommentStatus(feedId, username, content, created_at)
+      }
 
       content1.value = ''
     }
@@ -885,7 +905,11 @@
     const response = await axios.post(url, {}, config)
     const { followed, count } = response.data
     console.log(followed, count)
-    updateFollowState(followed, count)
+    if (count == undefined) {
+      location.href = '/accounts/login/'
+    } else {
+      updateFollowState(followed, count)
+    }
   }
   
   if (followForm) {

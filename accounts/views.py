@@ -90,6 +90,7 @@ def follows(request,username):
     
     return redirect('accounts:profile',you.username)
 
+@login_required
 def js_follows(request, username):
     if request.method == 'POST':
         you  = get_object_or_404(get_user_model(),username=username)
