@@ -122,38 +122,8 @@
               {% else %}
                 <img width='100%' src="https://profileimg.plaync.com/account_profile_images/8A3BFAF2-D15F-E011-9A06-E61F135E992F?imageSize=large" alt="">
               {% endif %}
-              <div class='mx-4 align-center' style='padding: 12.2px;'>
-                <p class='m-0 text-black'>{{ follower }}</p>
-              </div>
-            </div>
-          </div>
-        </a>
-        {% endfor %}
-        
-      </div>
-
-    </div>
-  </div>
-</div>
-
-<div class="modal fade" id="FolloweeModal" tabindex="-1" role="dialog" aria-labelledby="followeeLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
-    <div class="modal-content mx-auto" style='width: 250px;'>
-      <div class="modal-header">
-        <h5 class="modal-title mx-auto" id="followeeLabel">팔로우 리스트</h5>
-      </div>
-      <div class="modal-body" style='height: 300px;'>
-        {% for followee in user.followees.all %}
-        <a href="{% url 'accounts:profile' followee.username %}" class='text-decoration-none align-center'>
-          <div class='border mb-3'>
-            <div class='d-flex' style='height: 50px;'>
-              {% if followee.image_url  %}
-                <img width='50px' src="{{ followee.image_url.url }}" alt="">
-              {% else %}
-                <img width='50px' src="https://profileimg.plaync.com/account_profile_images/8A3BFAF2-D15F-E011-9A06-E61F135E992F?imageSize=large" alt="">
-              {% endif %}
               <div class='mx-4' style='padding: 12.2px;'>
-                <span class='text-black'>{{ followee.username }}</span>
+                <p class='m-0 text-black'>{{ follower }}</p>
               </div>
             </div>
           </div>
