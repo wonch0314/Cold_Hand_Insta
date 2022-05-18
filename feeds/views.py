@@ -4,7 +4,7 @@ from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
 
-from insta.settings import AUTH_USER_MODEL
+from insta.settings.base import AUTH_USER_MODEL
 from .models import Feed, Comment, Hashtag
 from accounts.models import User
 from .forms import FeedForm, CommentForm
