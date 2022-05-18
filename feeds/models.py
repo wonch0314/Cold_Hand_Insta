@@ -1,5 +1,5 @@
 from django.db import models
-from insta import settings
+from insta.settings import base as settings
 
 # Create your models here.
 class Hashtag(models.Model):
