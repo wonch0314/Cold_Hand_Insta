@@ -305,7 +305,7 @@ input:focus {
       event.preventDefault()
 
       const feedId = event.target.dataset.feedId
-      const url = `http://127.0.0.1:8000/${feedId}/like/`
+      const url = `http://13.125.75.235/${feedId}/like/`
 
       const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
       const config = {
@@ -344,7 +344,7 @@ input:focus {
       event.preventDefault()
 
       const feedId = event.target.dataset.feedId
-      const url = `http://127.0.0.1:8000/${feedId}/bookmark/`
+      const url = `http://13.125.75.235/${feedId}/bookmark/`
 
       const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
       const config = {
@@ -382,7 +382,7 @@ input:focus {
       event.preventDefault()
 
       const feedId = event.target.dataset.feedId
-      const url = `http://127.0.0.1:8000/${feedId}/like/`
+      const url = `http://13.125.75.235/${feedId}/like/`
 
       const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
       const config = {
@@ -421,7 +421,7 @@ input:focus {
       event.preventDefault()
 
       const feedId = event.target.dataset.feedId
-      const url = `http://127.0.0.1:8000/${feedId}/bookmark/`
+      const url = `http://13.125.75.235/${feedId}/bookmark/`
 
       const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
       const config = {
@@ -467,7 +467,7 @@ input:focus {
       event.preventDefault()
 
       const feedId = event.target.dataset.feedId
-      const url = `http://127.0.0.1:8000/${feedId}/comment/create/`
+      const url = `http://13.125.75.235/${feedId}/comment/create/`
 
       let content1 = document.querySelector(`#id_content_${feedId}`)
 
@@ -543,7 +543,7 @@ input:focus {
       event.preventDefault()
 
       const feedId = event.target.dataset.feedId
-      const url = `http://127.0.0.1:8000/${feedId}/delete/`
+      const url = `http://13.125.75.235/${feedId}/delete/`
 
       const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
       const config = {
@@ -569,7 +569,7 @@ input:focus {
       event.preventDefault()
 
       const feedId = event.target.dataset.feedId
-      const url = `http://127.0.0.1:8000/${feedId}/delete/`
+      const url = `http://13.125.75.235/${feedId}/delete/`
 
       const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
       const config = {
@@ -578,7 +578,7 @@ input:focus {
 
       const response = await axios.post(url, {}, config)
       
-      const url2 = 'http://127.0.0.1:8000/'
+      const url2 = 'http://13.125.75.235/'
       location.href = url2
     }
 
