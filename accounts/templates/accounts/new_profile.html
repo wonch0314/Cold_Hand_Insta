@@ -408,7 +408,7 @@
                       </svg> 
                       {% endif %}
                       <div style='padding-left:14px;'>
-                        <a class='name fw-bold m-0' href="{% url 'accounts:profile' feed.user.username %}">{{comment.user.username}}</a>
+                        <a class='name fw-bold m-0' href="{% url 'accounts:profile' comment.user.username %}">{{comment.user.username}}</a>
                         <span style=''>{{comment.content}}</span>
                         <div>
                           <p style='font-size:12px; margin-top:10px'>{{comment.created_at}}</p>
