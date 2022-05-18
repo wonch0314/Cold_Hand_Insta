@@ -178,8 +178,8 @@
   {% for feed in feeds %}
   <div class='col-4 p-3 d-flex justify-content-center align-items-center'>
       <a href='#' style='color:gray; text-decoration:none;' data-bs-toggle="modal" data-bs-target="#exampleModal{{feed.pk}}">
-        <div class='h-100'>
-          <img id="feed-image-{{ feed.pk }}" class='feed-image' src="{{feed.image_url.url}}">
+        <div class='h-100' style='max-height: 289px; max-width: 289px; position absolute; overflow: hidden;'>
+          <img id="feed-image-{{ feed.pk }}" class='feed-image w-100' src="{{feed.image_url.url}}" style='position:relative;'>
         </div>
       </a>
 
@@ -331,8 +331,8 @@
   {% for feed in bk_feeds %}
   <div class='col-4 p-3 d-flex flex-wrap align-items-center'>
       <a href='#' style='color:gray; text-decoration:none;' data-bs-toggle="modal" data-bs-target="#exampleModal{{feed.pk}}">
-        <div class='h-100'>
-          <img id="feed-image-{{ feed.pk }}" class='feed-image' src="{{feed.image_url.url}}">
+        <div class='h-100' style='max-height: 289px; max-width: 289px; position absolute; overflow: hidden;'>
+          <img id="feed-image-{{ feed.pk }}" class='feed-image w-100' src="{{feed.image_url.url}}" style='position:relative;'>
         </div>
       </a>
 
@@ -473,8 +473,8 @@
   {% for feed in tag_feeds %}
   <div class='col-4 p-3 d-flex flex-wrap align-items-center'>
       <a href='#' style='color:gray; text-decoration:none;' data-bs-toggle="modal" data-bs-target="#exampleModal{{feed.pk}}">
-        <div class='h-100'>
-          <img id="feed-image-{{ feed.pk }}" class='feed-image' src="{{feed.image_url.url}}">
+        <div class='h-100' style='max-height: 289px; max-width: 289px; position absolute; overflow: hidden;'>
+          <img id="feed-image-{{ feed.pk }}" class='feed-image w-100' src="{{feed.image_url.url}}" style='position:relative;'>
         </div>
       </a>
 
