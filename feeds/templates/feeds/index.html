@@ -46,7 +46,7 @@ input:focus {
 <div class='d-flex flex-column align-items-center'>
 
   {% for feed in feeds %}
-  <div class="card" style="width: 600px; margin-bottom: 24px; max-height:600px;" id="feed-{{feed.pk}}">
+  <div class="card" style="width: 600px; margin-bottom: 24px; " id="feed-{{feed.pk}}">
     {% comment %} 피드 상단바 {% endcomment %}
     <div class='namebar'>
       <div class='m-0 d-flex align-items-center justify-content-between'>
@@ -81,7 +81,7 @@ input:focus {
         </div>    
       </div>
     </div>
-    <img src="{{feed.image_url.url}}" class="card-img-top" alt="...">
+    <img src="{{feed.image_url.url}}" class="card-img-top" alt="..." style='max-height:600px;'>
     <div class="">
       <div class='d-flex justify-content-between' style='padding:6px 16px 8px;'>
         <div class='d-flex justify-content-between'>
