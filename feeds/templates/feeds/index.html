@@ -46,7 +46,7 @@ input:focus {
 <div class='d-flex flex-column align-items-center'>
 
   {% for feed in feeds %}
-  <div class="card" style="width: 600px; margin-bottom: 24px;" id="feed-{{feed.pk}}">
+  <div class="card" style="width: 600px; margin-bottom: 24px; max-height:600px;" id="feed-{{feed.pk}}">
     {% comment %} 피드 상단바 {% endcomment %}
     <div class='namebar'>
       <div class='m-0 d-flex align-items-center justify-content-between'>
