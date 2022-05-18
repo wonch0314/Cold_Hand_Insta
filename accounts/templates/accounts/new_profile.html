@@ -257,8 +257,8 @@
                     {% if feed.feed_comments.all %}
                     {% for comment in feed.feed_comments.all %}
                     <div class='d-flex align-items-start'>
-                      {% if feed.user.image_url %}
-                      <img src="{{feed.user.image_url.url}}" alt="" width='32' height='32' style='border-radius:50%;'>
+                      {% if comment.user.image_url %}
+                      <img src="{{comment.user.image_url.url}}" alt="" width='32' height='32' style='border-radius:50%;'>
                       {% else %}
                       <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
                         <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
@@ -266,7 +266,7 @@
                       </svg> 
                       {% endif %}
                       <div style='padding-left:14px;'>
-                        <a class='name fw-bold m-0' href="{% url 'accounts:profile' feed.user.username %}">{{comment.user.username}}</a>
+                        <a class='name fw-bold m-0' href="{% url 'accounts:profile' comment.user.username %}">{{comment.user.username}}</a>
                         <span style=''>{{comment.content}}</span>
                         <div>
                           <p style='font-size:12px; margin-top:10px'>{{comment.created_at}}</p>
@@ -552,8 +552,8 @@
                     {% if feed.feed_comments.all %}
                     {% for comment in feed.feed_comments.all %}
                     <div class='d-flex align-items-start'>
-                      {% if feed.user.image_url %}
-                      <img src="{{feed.user.image_url.url}}" alt="" width='32' height='32' style='border-radius:50%;'>
+                      {% if comment.user.image_url %}
+                      <img src="{{comment.user.image_url.url}}" alt="" width='32' height='32' style='border-radius:50%;'>
                       {% else %}
                       <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
                         <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
@@ -561,7 +561,7 @@
                       </svg> 
                       {% endif %}
                       <div style='padding-left:14px;'>
-                        <a class='name fw-bold m-0' href="{% url 'accounts:profile' feed.user.username %}">{{comment.user.username}}</a>
+                        <a class='name fw-bold m-0' href="{% url 'accounts:profile' comment.user.username %}">{{comment.user.username}}</a>
                         <span style=''>{{comment.content}}</span>
                         <div>
                           <p style='font-size:12px; margin-top:10px'>{{comment.created_at}}</p>
