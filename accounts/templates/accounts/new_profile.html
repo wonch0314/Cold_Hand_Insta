@@ -178,7 +178,7 @@
   {% for feed in feeds %}
   <div class='col-4 p-3 d-flex justify-content-center align-items-center'>
       <a href='#' style='color:gray; text-decoration:none;' data-bs-toggle="modal" data-bs-target="#exampleModal{{feed.pk}}">
-        <div style='max-height: 289px; max-width: 289px; position absolute; overflow: hidden;'>
+        <div style='max-height: 289px; max-width: 289px; position absolute; overflow: hidden; background:black;'>
           <img id="feed-image-{{ feed.pk }}" class='w-100' style='position:relative;' src="{{feed.image_url.url}}">
         </div>
       </a>
