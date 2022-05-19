@@ -255,7 +255,7 @@
       event.preventDefault()
 
       const feedId = event.target.dataset.feedId
-      const url = `http://13.125.75.235/${feedId}/like/`
+      const url = `http://ssafstagram.com/${feedId}/like/`
 
       const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
       const config = {
@@ -290,7 +290,7 @@
       event.preventDefault()
 
       const feedId = event.target.dataset.feedId
-      const url = `http://13.125.75.235/${feedId}/bookmark/`
+      const url = `http://ssafstagram.com/${feedId}/bookmark/`
 
       const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
       const config = {
@@ -337,7 +337,7 @@
       event.preventDefault()
 
       const feedId = event.target.dataset.feedId
-      const url = `http://13.125.75.235/${feedId}/comment/create/`
+      const url = `http://ssafstagram.com/${feedId}/comment/create/`
 
       let content1 = document.querySelector(`#id_content_${feedId}`)
 
@@ -410,7 +410,7 @@
       event.preventDefault()
 
       const feedId = event.target.dataset.feedId
-      const url = `http://13.125.75.235/${feedId}/delete/`
+      const url = `http://ssafstagram.com/${feedId}/delete/`
 
       const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
       const config = {
@@ -420,7 +420,7 @@
       const response = await axios.post(url, {}, config)
       const hashtag = event.target.dataset.hashtag
       
-      const url2 = 'http://13.125.75.235/hashtag/search/'+hashtag
+      const url2 = 'http://ssafstagram.com/hashtag/search/'+hashtag
       location.href = url2
     }
 
