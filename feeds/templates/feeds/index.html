@@ -115,7 +115,7 @@ input:focus {
         </form>
       </div>
       <div style='padding-left:16px; margin-bottom:8px; font-size:14px;'>
-        <p class='m-0 fw-bold'>좋아요 <span id="like-count-{{ feed.pk }}">{{feed.like_users.all|length}}</span>개</p>
+        <a href="" data-bs-toggle="modal" data-bs-target="#LikeModal" class='text-decoration-none'><p class='m-0 fw-bold'>좋아요 <span id="like-count-{{ feed.pk }}">{{feed.like_users.all|length}}</span>개</p></a>
       </div>
       <div style='font-size:14px; padding:0px 16px;'>
         <p class="m-0" style=''><a href='{% url 'accounts:profile' feed.user.username %}' class='fw-bold text-decoration-none text-black' >{{feed.user.username}}</a> <span class='feed-content'>{{ feed.content }}</span></p>
@@ -127,6 +127,37 @@ input:focus {
           댓글 달기
           {% endif %}
         </a>
+
+        {% comment %} 좋아요 누른 목록 {% endcomment %}
+        <div class="modal fade" id="LikeModal" tabindex="-1" role="dialog" aria-labelledby="followerLabel" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content mx-auto" style='width: 250px;'>
+              <div class="modal-header">
+                <h5 class="modal-title mx-auto" id="followerLabel">좋아요</h5>
+              </div>
+              <div class="modal-body" style='height: 300px;'>
+                {% for user in feed.like_users.all %}
+                <a href="{% url 'accounts:profile' user.username %}" class='text-decoration-none align-center'>
+                  <div class='border mb-3'>
+                    <div class='d-flex' style='height: 50px;'>
+                      {% if user.image_url  %}
+                        <img width='50px' src="{{ user.image_url.url }}" alt="">
+                      {% else %}
+                        <img width='50px' src="https://profileimg.plaync.com/account_profile_images/8A3BFAF2-D15F-E011-9A06-E61F135E992F?imageSize=large" alt="">
+                      {% endif %}
+                      <div class='mx-4' style='padding: 12.2px;'>
+                        <span class='m-0 text-black'>{{ user }}</span>
+                      </div>
+                    </div>
+                  </div>
+                </a>
+                {% endfor %}
+                
+              </div>
+        
+            </div>
+          </div>
+        </div>
 
         <!-- Modal -->
         <div class="modal fade feed-modal" id="exampleModal{{feed.pk}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
