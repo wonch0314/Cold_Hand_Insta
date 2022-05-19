@@ -307,7 +307,7 @@ input:focus {
       event.preventDefault()
 
       const feedId = event.target.dataset.feedId
-      const url = `http://ssafstagram.com/${feedId}/like/`
+      const url = `https://ssafstagram.com/${feedId}/like/`
 
       const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
       const config = {
@@ -346,7 +346,7 @@ input:focus {
       event.preventDefault()
 
       const feedId = event.target.dataset.feedId
-      const url = `http://ssafstagram.com/${feedId}/bookmark/`
+      const url = `https://ssafstagram.com/${feedId}/bookmark/`
 
       const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
       const config = {
@@ -384,7 +384,7 @@ input:focus {
       event.preventDefault()
 
       const feedId = event.target.dataset.feedId
-      const url = `http://ssafstagram.com/${feedId}/like/`
+      const url = `https://ssafstagram.com/${feedId}/like/`
 
       const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
       const config = {
@@ -423,7 +423,7 @@ input:focus {
       event.preventDefault()
 
       const feedId = event.target.dataset.feedId
-      const url = `http://ssafstagram.com/${feedId}/bookmark/`
+      const url = `https://ssafstagram.com/${feedId}/bookmark/`
 
       const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
       const config = {
@@ -469,7 +469,7 @@ input:focus {
       event.preventDefault()
 
       const feedId = event.target.dataset.feedId
-      const url = `http://ssafstagram.com/${feedId}/comment/create/`
+      const url = `https://ssafstagram.com/${feedId}/comment/create/`
 
       let content1 = document.querySelector(`#id_content_${feedId}`)
 
@@ -545,7 +545,7 @@ input:focus {
       event.preventDefault()
 
       const feedId = event.target.dataset.feedId
-      const url = `http://ssafstagram.com/${feedId}/delete/`
+      const url = `https://ssafstagram.com/${feedId}/delete/`
 
       const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
       const config = {
@@ -571,7 +571,7 @@ input:focus {
       event.preventDefault()
 
       const feedId = event.target.dataset.feedId
-      const url = `http://ssafstagram.com/${feedId}/delete/`
+      const url = `https://ssafstagram.com/${feedId}/delete/`
 
       const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
       const config = {
@@ -580,7 +580,7 @@ input:focus {
 
       const response = await axios.post(url, {}, config)
       
-      const url2 = 'http://ssafstagram.com/'
+      const url2 = 'https://ssafstagram.com/'
       location.href = url2
     }
 

@@ -636,7 +636,7 @@
       event.preventDefault()
 
       const feedId = event.target.dataset.feedId
-      const url = `http://ssafstagram.com/${feedId}/like/`
+      const url = `https://ssafstagram.com/${feedId}/like/`
 
       const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
       const config = {
@@ -671,7 +671,7 @@
       event.preventDefault()
 
       const feedId = event.target.dataset.feedId
-      const url = `http://ssafstagram.com/${feedId}/bookmark/`
+      const url = `https://ssafstagram.com/${feedId}/bookmark/`
 
       const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
       const config = {
@@ -718,7 +718,7 @@
       event.preventDefault()
 
       const feedId = event.target.dataset.feedId
-      const url = `http://ssafstagram.com/${feedId}/comment/create/`
+      const url = `https://ssafstagram.com/${feedId}/comment/create/`
 
       let content1 = document.querySelector(`#id_content_${feedId}`)
 
@@ -812,7 +812,7 @@
   async function onSubmit_follow (event) {
     event.preventDefault()
     const username = event.target.dataset.username
-    const url = `http://ssafstagram.com/accounts/${username}/follows/`
+    const url = `https://ssafstagram.com/accounts/${username}/follows/`
   
     const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
     const config = {
@@ -878,7 +878,7 @@
     event.preventDefault()
 
     const feedId = event.target.dataset.feedId
-    const url = `http://ssafstagram.com/${feedId}/delete/`
+    const url = `https://ssafstagram.com/${feedId}/delete/`
 
     const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
     const config = {
@@ -888,7 +888,7 @@
     const response = await axios.post(url, {}, config)
     const {username} = response.data
     
-    const url2 = 'http://ssafstagram.com/accounts/profile/'+username
+    const url2 = 'https://ssafstagram.com/accounts/profile/'+username
     location.href = url2
   }
 
